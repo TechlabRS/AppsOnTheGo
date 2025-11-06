@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RS' Multi-Site Quick Access Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        /* Custom styles for a CLEAN LIGHT look */
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #88ff00; /* Slate 50: Very light background */
+        }
+        .icon-container {
+            width: 48px;
+            height: 48px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 12px;
+            color: white; /* Category icon remains white for contrast */
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.06); 
+        }
+        /* Custom hover effect for link cards (Dark glow effect) */
+        .link-card {
+            transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out, background-color 0.2s ease-in-out;
+        }
+        .link-card:hover {
+            transform: translateY(-2px);
+            /* Deep Navy/Black Glow effect on hover */
+            box-shadow: 0 0 10px rgba(15, 23, 42, 0.3); /* Slate 900 Glow */
+            background-color: #E2E8F0; /* Slate 200: Slightly darker component on hover */
+        }
+
+        /* Category Card Hover Effect */
+        .category-card:hover {
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.2), 0 4px 6px -4px rgba(0, 0, 0, 0.1);
+            border-color: #4F46E5; /* Indigo border on hover */
+        }
+        
+        /* Modal styling - Light theme */
+        .modal {
+            background-color: rgba(248, 250, 252, 0.85); /* Light backdrop */
+            backdrop-filter: blur(8px); /* Stronger blur */
+            transition: opacity 0.3s ease-in-out;
+        }
+    </style>
+</head>
+<body class="p-4 sm:p-8">
+
+    <div class="max-w-7xl mx-auto">
+        <header class="text-center mb-10">
+            <h1 class="text-4xl sm:text-5xl font-extrabold text-gray-900 mb-2 tracking-tight">RS' Daily Navigator and Dashboard ✨</h1>
+            <p class="text-gray-700 text-lg">Your centralized hub for all 5+ accounts and essential web services.</p>
+        </header>
+
+        <div class="mb-10 flex justify-center">
+            <button id="openModalButton" class="flex items-center space-x-2 px-8 py-3 bg-indigo-600 text-white font-semibold rounded-full shadow-lg hover:bg-indigo-700 transition duration-300 transform hover:scale-[1.02]">
+                <i data-lucide="Plus" class="w-5 h-5"></i>
+                <span>Add New Link</span>
+            </button>
+        </div>
+
+        <main id="dashboard-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            </main>
+    </div>
+
+    <div id="addLinkModal" class="modal fixed inset-0 z-50 flex items-center justify-center opacity-0 pointer-events-none">
+        <div class="bg-white p-8 rounded-xl shadow-2xl w-full max-w-lg mx-4 transform scale-95 transition duration-300 border border-gray-200">
+            <h3 class="text-2xl font-bold text-gray-900 mb-4 border-b border-gray-200 pb-3">Add New Quick Link</h3>
+            <form id="addLinkForm">
+                
+                <div class="mb-4">
+                    <label for="linkName" class="block text-sm font-medium text-gray-700 mb-1">Link Name (e.g., Jira, Personal Mail)</label>
+                    <input type="text" id="linkName" required class="w-full p-3 rounded-lg bg-gray-100 text-gray-900 border border-gray-300 focus:border-indigo-500 focus:ring focus:ring-indigo-500/50" placeholder="My New Site">
+                </div>
+
+                <div class="mb-4">
+                    <label for="linkUrl" class="block text-sm font-medium text-gray-700 mb-1">URL (e.g., google.com)</label>
+                    <input type="text" id="linkUrl" required class="w-full p-3 rounded-lg bg-gray-100 text-gray-900 border border-gray-300 focus:border-indigo-500 focus:ring focus:ring-indigo-500/50" placeholder="example.com">
+                </div>
+
+                <div class="mb-6">
+                    <label for="linkCategory" class="block text-sm font-medium text-gray-700 mb-1">Category</label>
+                    <select id="linkCategory" required class="w-full p-3 rounded-lg bg-gray-100 text-gray-900 border border-gray-300 focus:border-indigo-500 focus:ring focus:ring-indigo-500/50">
+                        </select>
+                </div>
+
+                <div class="flex justify-end space-x-4">
+                    <button type="button" id="closeModalButton" class="px-5 py-2 bg-gray-200 text-gray-700 rounded-full hover:bg-gray-300 transition duration-200 font-semibold">Cancel</button>
+                    <button type="submit" class="px-5 py-2 bg-indigo-600 text-white rounded-full hover:bg-indigo-700 transition duration-200 font-semibold">Add Link</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // Data structure for the dashboard categories and links
+        // NOTE: This data is stored in memory and will reset when the page is refreshed.
+        let sites = [
+            {
+                category: "Career & Development",
+                icon: "Briefcase",
+                color: "bg-indigo-600", // Deep Blue/Purple
+                links: [
+                    { name: "GitHub", url: "https://github.com", icon: "Code", description: "Source code management." },
+                    { name: "Google Cloud", url: "https://cloud.google.com", icon: "Cloud", description: "Cloud computing and hosting." },
+                    { name: "Stack Overflow", url: "https://stackoverflow.com/", icon: "Users", description: "Q&A for programmers." },
+                    { name: "LinkedIn", url: "https://www.linkedin.com/", icon: "Zap", description: "Professional networking." }
+                ]
+            },
+            {
+                category: "Communication & Tools",
+                icon: "MessageCircle",
+                color: "bg-teal-600", // Vibrant Teal
+                links: [
+                    { name: "Gmail", url: "https://mail.google.com", icon: "Mail", description: "Access all your inboxes." },
+                    { name: "Google Search", url: "https://google.com", icon: "Search", description: "Daily research and queries." },
+                    { name: "ChatGPT", url: "https://chat.openai.com", icon: "Bot", description: "Generative AI assistant." }
+                ]
+            },
+            {
+                category: "Entertainment & Media",
+                icon: "PlayCircle",
+                color: "bg-pink-600", // Rich Pink
+                links: [
+                    { name: "YouTube", url: "https://youtube.com", icon: "MonitorPlay", description: "Video content platform." },
+                    { name: "Netflix", url: "https://www.netflix.com/", icon: "Clapperboard", description: "Movies and TV streaming." },
+                    { name: "Twitch", url: "https://www.twitch.tv/", icon: "Gamepad2", description: "Live streaming and gaming." }
+                ]
+            },
+            {
+                category: "E-commerce & Shopping",
+                icon: "ShoppingCart",
+                color: "bg-green-600", // Stronger Green
+                links: [
+                    { name: "Amazon", url: "https://amazon.com", icon: "Package", description: "Global online retailer." },
+                    { name: "Flipkart", url: "https://flipkart.com", icon: "Tags", description: "Indian e-commerce giant." },
+                    { name: "Ebay", url: "https://www.ebay.com/", icon: "ShoppingBag", description: "Auction and retail site." }
+                ]
+            },
+            {
+                category: "Reference & Knowledge",
+                icon: "BookOpen",
+                color: "bg-amber-600", // Warm Amber
+                links: [
+                    { name: "Wikipedia", url: "https://www.wikipedia.org/", icon: "Globe", description: "The Free Encyclopedia." },
+                    { name: "Google Drive", url: "https://drive.google.com/", icon: "Folder", description: "Cloud storage access." },
+                    { name: "Notion", url: "https://www.notion.so/", icon: "LayoutDashboard", description: "All-in-one workspace." }
+                ]
+            }
+        ];
+
+        const dashboardGrid = document.getElementById('dashboard-grid');
+        const modal = document.getElementById('addLinkModal');
+        const openModalBtn = document.getElementById('openModalButton');
+        const closeModalBtn = document.getElementById('closeModalButton');
+        const addLinkForm = document.getElementById('addLinkForm');
+        const categorySelect = document.getElementById('linkCategory');
+        
+        // --- Core Rendering Functions ---
+
+        /**
+         * Creates the HTML element for a single quick link.
+         * @param {object} link 
+         * @returns {HTMLElement}
+         */
+        function createLinkElement(link) {
+             const linkElement = document.createElement('a');
+             linkElement.href = link.url;
+             linkElement.target = "_blank"; 
+             // Updated link-card styling for LIGHT theme: bg-gray-100, dark text
+             linkElement.className = "link-card p-3 bg-gray-100 rounded-lg transition duration-200 ease-in-out border border-gray-300 block";
+
+             const iconName = link.icon || "Link"; 
+
+             linkElement.innerHTML = `
+                 <div class="flex items-center space-x-2">
+                     <i data-lucide="${iconName}" class="w-5 h-5 text-indigo-600"></i>
+                     <span class="text-sm font-semibold text-gray-900 truncate">${link.name}</span>
+                 </div>
+                 <p class="text-xs text-gray-500 mt-1 hidden sm:block">${link.description || 'Quick access link.'}</p>
+             `;
+             return linkElement;
+        }
+
+        /**
+         * Creates the HTML section for an entire category card, including the toggle.
+         * @param {object} categoryData 
+         * @returns {HTMLElement}
+         */
+        function createCategorySection(categoryData) {
+            const section = document.createElement('div');
+            // Updated category-card styling for LIGHT theme: bg-white, dark border
+            section.className = "category-card bg-white p-6 rounded-xl shadow-lg transition duration-300 border border-gray-200 flex flex-col";
+            section.id = `category-${categoryData.category.replace(/\s+/g, '-')}`;
+
+            const categoryId = categoryData.category.replace(/\s+/g, '-');
+
+            // Header (Icon + Title + Toggle Button)
+            const header = document.createElement('div');
+            header.className = "flex items-center space-x-4 mb-6 pb-4 border-b border-gray-200"; 
+            
+            // Category Icon Wrapper
+            const iconWrapper = document.createElement('div');
+            iconWrapper.className = `icon-container ${categoryData.color} flex-shrink-0`;
+            iconWrapper.innerHTML = `<i data-lucide="${categoryData.icon}" class="w-6 h-6"></i>`;
+            
+            // Category Title - Dark text color
+            const title = document.createElement('h2');
+            title.className = "text-xl sm:text-2xl font-bold text-gray-900 tracking-wide truncate flex-grow";
+            title.textContent = categoryData.category;
+
+            // --- Toggle Button - Dark/Indigo colors for high visibility ---
+            const toggleButton = document.createElement('button');
+            toggleButton.className = "toggle-switch ml-auto p-2 rounded-full text-indigo-600/70 hover:text-indigo-700 hover:bg-indigo-50 transition duration-300 flex-shrink-0";
+            toggleButton.setAttribute('data-target-id', `link-grid-${categoryId}`);
+            // Initial state: Expanded (ChevronUp)
+            toggleButton.innerHTML = `<i data-lucide="ChevronUp" class="w-6 h-6 transform transition-transform duration-300"></i>`;
+            
+            header.appendChild(iconWrapper);
+            header.appendChild(title);
+            header.appendChild(toggleButton); 
+            section.appendChild(header);
+
+            // Grid for links (This is the collapsible content)
+            const linkGrid = document.createElement('div');
+            // Initial state: visible (no 'hidden' class), using 'grid' display
+            linkGrid.className = "grid-content grid grid-cols-2 gap-4 flex-grow"; 
+            linkGrid.id = `link-grid-${categoryId}`; 
+
+            // Populate links
+            categoryData.links.forEach(link => {
+                linkGrid.appendChild(createLinkElement(link));
+            });
+
+            section.appendChild(linkGrid);
+            return section;
+        }
+        
+        /**
+         * Toggles the visibility of the link grid when the button is clicked.
+         * @param {Event} event 
+         */
+        function handleCategoryToggle(event) {
+            const button = event.currentTarget;
+            const targetId = button.getAttribute('data-target-id');
+            const targetGrid = document.getElementById(targetId);
+            
+            // Query for the actual SVG element that Lucide creates inside the button
+            const icon = button.querySelector('svg');
+
+            if (targetGrid.classList.contains('hidden')) {
+                // EXPAND: Remove hidden class and rotate icon back to 0 degrees (Up)
+                targetGrid.classList.remove('hidden');
+                if (icon) {
+                    icon.style.transform = 'rotate(0deg)';
+                }
+            } else {
+                // COLLAPSE: Add hidden class and rotate icon to 180 degrees (Down)
+                targetGrid.classList.add('hidden');
+                if (icon) {
+                    icon.style.transform = 'rotate(-180deg)';
+                }
+            }
+        }
+
+        /**
+         * Clears, re-renders the dashboard, and re-attaches all event listeners.
+         */
+        function renderDashboard() {
+            // Clear existing dashboard content
+            dashboardGrid.innerHTML = '';
+            
+            // Re-render all categories
+            sites.forEach(category => {
+                dashboardGrid.appendChild(createCategorySection(category));
+            });
+            
+            // Re-initialize Lucide icons for new elements
+            // This must run before attaching the toggle listeners to ensure the SVG exists
+            lucide.createIcons();
+            
+            // Re-populate the modal's category dropdown
+            populateCategoryDropdown();
+            
+            // Attach toggle event listeners to all new toggle buttons
+            document.querySelectorAll('.toggle-switch').forEach(button => {
+                // Ensure no duplicate listeners by removing old ones first
+                button.removeEventListener('click', handleCategoryToggle);
+                button.addEventListener('click', handleCategoryToggle);
+            });
+        }
+
+        // --- Modal and Form Functions (Unchanged) ---
+
+        function populateCategoryDropdown() {
+            categorySelect.innerHTML = '';
+            sites.forEach(category => {
+                const option = document.createElement('option');
+                option.value = category.category;
+                option.textContent = category.category;
+                categorySelect.appendChild(option);
+            });
+        }
+        
+        function openModal() {
+            modal.classList.remove('opacity-0', 'pointer-events-none');
+            modal.querySelector('div').classList.remove('scale-95');
+            modal.querySelector('div').classList.add('scale-100');
+        }
+
+        function closeModal() {
+            modal.classList.add('opacity-0', 'pointer-events-none');
+            modal.querySelector('div').classList.remove('scale-100');
+            modal.querySelector('div').classList.add('scale-95');
+            addLinkForm.reset();
+        }
+
+        /**
+         * Handles form submission, now automatically prepending https://www.
+         * if no protocol is present.
+         * @param {Event} event 
+         */
+        function handleAddLink(event) {
+            event.preventDefault();
+            
+            const name = document.getElementById('linkName').value;
+            let url = document.getElementById('linkUrl').value.trim(); 
+            const categoryName = document.getElementById('linkCategory').value;
+            
+            // URL Normalization Logic: Prepend 'https://www.' if no protocol is present.
+            if (url && !url.startsWith('http://') && !url.startsWith('https://')) {
+                url = 'https://www.' + url;
+            }
+
+            const newLink = {
+                name: name,
+                url: url,
+                icon: "Link", // Default icon for user-added links
+                description: `Added by user on ${new Date().toLocaleDateString()}`
+            };
+
+            // Find the correct category and add the new link
+            const category = sites.find(c => c.category === categoryName);
+            if (category) {
+                category.links.push(newLink);
+                renderDashboard(); // Re-render the dashboard to show the new link
+                closeModal();
+            } else {
+                console.error("Category not found.");
+            }
+        }
+
+        // --- Event Listeners and Initialization ---
+
+        // Initialize the dashboard on load
+        window.onload = function() {
+            renderDashboard(); 
+            
+            // Set up event listeners for modal and form
+            openModalBtn.addEventListener('click', openModal);
+            closeModalBtn.addEventListener('click', closeModal);
+            modal.addEventListener('click', (e) => {
+                // Close modal when clicking outside the content area
+                if (e.target === modal) {
+                    closeModal();
+                }
+            });
+            addLinkForm.addEventListener('submit', handleAddLink);
+        };
+    </script>
+
+</body>
+</html>
