@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>All-in-One Food Tracker</title>
+    <title>Foods All-in-One Tracker</title>
     <!-- Google Font: Inter -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -28,6 +28,8 @@
             --border-radius: 12px;
             --warning-light: #fff3cd;
             --warning-dark: #856404;
+            --danger-light: #f8d7da;
+            --danger-dark: #721c24;
         }
 
         /* General Reset & Body */
@@ -82,10 +84,10 @@
 
         .nav-tab {
             flex: 1;
-            padding: 16px 4px; /* Adjusted padding for 5 tabs */
+            padding: 12px 2px; /* Adjusted padding for 6 tabs */
             text-align: center;
             cursor: pointer;
-            font-size: 0.8rem; /* Adjusted font size for 5 tabs */
+            font-size: 0.7rem; /* Adjusted font size for 6 tabs */
             font-weight: 600;
             color: var(--text-light);
             border-bottom: 3px solid transparent;
@@ -96,7 +98,7 @@
             gap: 4px;
         }
         .nav-tab i {
-            font-size: 1.5rem; /* Icon size */
+            font-size: 1.25rem; /* Icon size */
         }
         .nav-tab.active {
             color: var(--primary-green);
@@ -173,7 +175,14 @@
             border-radius: 8px;
             font-size: 1rem;
             font-family: 'Inter', sans-serif;
+            -moz-appearance: textfield; /* Firefox */
         }
+        .form-input::-webkit-outer-spin-button,
+        .form-input::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+        
         .form-button {
             padding: 12px 16px;
             border: none;
@@ -270,29 +279,48 @@
             padding: 4px;
         }
         .remove-log-btn:hover {
-            color: #d00000;
+            color: var(--danger-dark);
         }
 
-        /* Nutrition Summary */
-        .nutrition-summary {
-            margin-top: 16px;
-            border-top: 1px solid var(--grey-light);
-            padding-top: 16px;
+        /* --- Daily Goal Progress Bars --- */
+        .progress-goal-container {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
         }
-        .summary-item {
+        .progress-item {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+        .progress-label {
             display: flex;
             justify-content: space-between;
-            align-items: center;
-            font-size: 0.95rem;
-            padding: 8px 0;
+            font-size: 0.9rem;
+            font-weight: 600;
         }
-        .summary-item p {
+        .progress-label span:last-child {
+            font-weight: 500;
             color: var(--text-light);
         }
-        .summary-value {
-            font-weight: 600;
-            color: var(--text-dark);
+        .progress-bar-container {
+            width: 100%;
+            height: 12px;
+            background: var(--grey-light);
+            border-radius: 6px;
+            overflow: hidden;
         }
+        .progress-bar-fill {
+            height: 100%;
+            background: var(--medium-green);
+            border-radius: 6px;
+            transition: width 0.5s ease;
+        }
+        /* Color override for calories */
+        .progress-bar-fill.calories {
+            background: var(--primary-green);
+        }
+
 
         /* --- Meal Ideas Page --- */
         .day-selector {
@@ -377,184 +405,6 @@
             bottom: 30px;
         }
 
-        /* --- Exercises Page --- */
-        .exercise-list {
-            display: grid;
-            gap: 16px;
-        }
-        .exercise-card {
-            background: var(--white);
-            border: 1px solid var(--grey-light);
-            border-radius: var(--border-radius);
-            padding: 20px;
-            box-shadow: var(--shadow);
-        }
-        .exercise-card h3 {
-            font-size: 1.1rem;
-            font-weight: 600;
-            color: var(--primary-green);
-            margin-bottom: 8px;
-        }
-        .exercise-card p {
-            font-size: 0.9rem;
-            color: var(--text-light);
-            line-height: 1.5;
-        }
-
-        /* --- Warning Box --- */
-        .warning-box {
-            background: var(--warning-light);
-            border: 1px solid var(--warning-dark);
-            color: var(--warning-dark);
-            padding: 16px;
-            border-radius: 8px;
-            margin-bottom: 20px;
-            font-size: 0.9rem;
-            line-height: 1.5;
-        }
-        .warning-box strong {
-            font-weight: 700;
-        }
-
-        /* --- Responsive Adjustments --- */
-        @media (max-width: 400px) {
-            body {
-                padding: 10px;
-            }
-            main {
-                padding: 16px;
-            }
-            header {
-                padding: 20px;
-            }
-            header h1 {
-                font-size: 1.5rem;
-            }
-            .nav-tab {
-                padding: 12px 4px;
-                font-size: 0.7rem;
-            }
-            .nav-tab i {
-                font-size: 1.25rem;
-            }
-        }
-        
-        /* --- General Form Elements (re-using from dashboard) --- */
-        .form-group {
-            margin-bottom: 20px;
-        }
-        .form-group label {
-            display: block;
-            font-weight: 600;
-            margin-bottom: 8px;
-            font-size: 0.9rem;
-        }
-        
-        .food-search-container {
-            position: relative;
-        }
-        .food-search-results {
-            position: absolute;
-            width: 100%;
-            background: var(--white);
-            border: 1px solid var(--grey-medium);
-            border-radius: 0 0 var(--border-radius) var(--border-radius);
-            box-shadow: var(--shadow);
-            z-index: 10;
-            max-height: 200px;
-            overflow-y: auto;
-            border-top: none; /* Hide top border */
-        }
-        .food-search-results:empty {
-            border: none;
-        }
-        .food-result-item {
-            padding: 12px 16px;
-            cursor: pointer;
-            border-bottom: 1px solid var(--grey-light);
-        }
-        .food-result-item:last-child {
-            border-bottom: none;
-        }
-        .food-result-item:hover {
-            background-color: var(--bg-light);
-        }
-        .food-result-item p {
-            font-weight: 500;
-        }
-        .food-result-item span {
-            font-size: 0.85rem;
-            color: var(--text-light);
-        }
-
-        .todays-log-list {
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-            margin-bottom: 20px;
-        }
-        .log-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 12px;
-            background: var(--bg-light);
-            border-radius: 8px;
-        }
-        .log-item-details p {
-            font-weight: 600;
-            font-size: 0.95rem;
-        }
-        .log-item-details span {
-            font-size: 0.8rem;
-            color: var(--text-light);
-        }
-        .remove-log-btn {
-            background: transparent;
-            border: none;
-            color: var(--text-light);
-            font-size: 1.25rem;
-            cursor: pointer;
-            padding: 4px;
-        }
-        .remove-log-btn:hover {
-            color: #d00000;
-        }
-
-        .nutrition-summary {
-            margin-top: 16px;
-            border-top: 1px solid var(--grey-light);
-            padding-top: 16px;
-        }
-        .summary-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            font-size: 0.95rem;
-            padding: 8px 0;
-        }
-        .summary-item p {
-            color: var(--text-light);
-        }
-        .summary-value {
-            font-weight: 600;
-            color: var(--text-dark);
-        }
-
-        /* --- Exercises Page --- */
-        .exercise-list {
-            display: grid;
-            gap: 16px;
-        }
-        .exercise-card {
-            background: var(--white);
-            border: 1px solid var(--grey-light);
-            border-radius: var(--border-radius);
-            padding: 20px;
-            box-shadow: var(--shadow);
-            margin-top: 20px;
-        }
-
         /* --- Food List Page --- */
         .food-database-list {
             display: grid;
@@ -599,7 +449,7 @@
             color: var(--text-light);
         }
         
-        /* --- New Routine Log Page --- */
+        /* --- Routine Log Page --- */
         .routine-meal-group {
             margin-bottom: 24px;
         }
@@ -661,7 +511,128 @@
         .btn-log-booster:hover {
             background-color: var(--grey-medium);
         }
-        /* --- End Routine Log Page --- */
+
+        /* --- History Page --- */
+        .history-day-card {
+            background: var(--white);
+            border: 1px solid var(--grey-light);
+            border-radius: var(--border-radius);
+            padding: 16px;
+            box-shadow: var(--shadow);
+            margin-bottom: 16px;
+        }
+        .history-day-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--primary-green);
+            margin-bottom: 12px;
+        }
+        .history-day-title span {
+            font-weight: 500;
+            color: var(--text-light);
+            font-size: 0.9rem;
+            margin-left: 8px;
+        }
+        .history-day-stats {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            font-size: 0.95rem;
+        }
+        .history-stat {
+            display: flex;
+            flex-direction: column;
+        }
+        .history-stat-label {
+            font-size: 0.85rem;
+            color: var(--text-light);
+            margin-bottom: 2px;
+        }
+        .history-stat-value {
+            font-weight: 600;
+            color: var(--text-dark);
+        }
+
+        /* --- NEW: Quantity Modal --- */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            padding: 20px;
+        }
+        .modal-content {
+            background: var(--white);
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow-lg);
+            width: 100%;
+            max-width: 400px;
+            padding: 24px;
+        }
+        .modal-content h3 {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: var(--primary-green);
+            margin-bottom: 16px;
+        }
+        .modal-body {
+            margin-bottom: 24px;
+        }
+        .modal-body label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 8px;
+            font-size: 0.9rem;
+        }
+        .modal-input-group {
+            display: flex;
+            gap: 10px;
+        }
+        .modal-input-group .form-input {
+            flex: 1;
+        }
+        .modal-unit-label {
+            display: flex;
+            align-items: center;
+            font-size: 1rem;
+            color: var(--text-light);
+            font-weight: 500;
+        }
+        .modal-actions {
+            display: flex;
+            gap: 12px;
+            justify-content: flex-end;
+        }
+        .modal-btn-cancel, .modal-btn-add {
+            padding: 10px 16px;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .modal-btn-cancel {
+            background: var(--grey-light);
+            color: var(--text-dark);
+            border: 1px solid var(--grey-medium);
+        }
+        .modal-btn-cancel:hover {
+            background: var(--grey-medium);
+        }
+        .modal-btn-add {
+            background: var(--medium-green);
+            color: var(--white);
+        }
+        .modal-btn-add:hover {
+            background: var(--primary-green);
+        }
 
     </style>
 </head>
@@ -685,6 +656,10 @@
             <div class="nav-tab" data-page="add-custom">
                 <i class="ph-light ph-magnifying-glass"></i>
                 Add Custom
+            </div>
+            <div class="nav-tab" data-page="history">
+                <i class="ph-light ph-chart-bar-horizontal"></i>
+                History
             </div>
             <div class="nav-tab" data-page="plan">
                 <i class="ph-light ph-calendar"></i>
@@ -725,22 +700,23 @@
                 </div>
 
                 <div class="card">
-                    <h3>Log Today's Weight</h3>
-                    <form id="weight-log-form" class="weight-log-form">
-                        <input type="number" id="weight-input" class="form-input" placeholder="Enter weight in kg" step="0.1" required>
-                        <button type="submit" class="form-button">Save</button>
-                    </form>
-                    <h3>Today's Summary</h3>
-                    <div class="progress-stats">
-                        <div class="stat">
-                            <p>Meals Logged</p>
-                            <span class="stat-value" id="stat-meals-logged">0</span>
-                        </div>
-                        <div class="stat">
-                            <p>Calories Logged</p>
-                            <span class="stat-value" id="stat-calories-logged">0</span>
-                        </div>
+                    <h3>Today's Goals</h3>
+                    <div id="dashboard-goals-container" class="progress-goal-container">
+                        <!-- Progress bars will be injected here -->
                     </div>
+                </div>
+
+                <!-- UPDATED WEIGHT LOG FORM -->
+                <div class="card">
+                    <h3>Log Weight</h3>
+                    <form id="weight-log-form" class="weight-log-form" style="flex-wrap: wrap;">
+                        <input type="number" id="weight-input" class="form-input" placeholder="Enter weight in kg" step="0.1" required style="flex-basis: 100%; margin-bottom: 12px;">
+                        <div class="form-group" style="flex: 1; margin-bottom: 0;">
+                            <label for="weight-log-date" style="font-size: 0.8rem; font-weight: 500;">Date:</label>
+                            <input type="date" id="weight-log-date" class="form-input" style="padding-top: 8px; padding-bottom: 8px;">
+                        </div>
+                        <button type="submit" class="form-button" style="flex-basis: 100px;">Save</button>
+                    </form>
                 </div>
                 
                 <div class="card">
@@ -749,10 +725,16 @@
                 </div>
             </section>
 
-            <!-- Log Meal Page -->
+            <!-- Log Custom Food Page -->
             <section id="page-add-custom" class="page">
                 <h2 class="page-title"><i class="ph-light ph-magnifying-glass"></i>Add Custom Food</h2>
                 
+                <!-- NEW DATE PICKER -->
+                <div class="form-group">
+                    <label for="log-date-picker-custom">Logging for date:</label>
+                    <input type="date" id="log-date-picker-custom" class="form-input" style="max-width: 200px;">
+                </div>
+
                 <div class="form-group food-search-container">
                     <label for="food-search-input">Search Food Database</label>
                     <input type="text" id="food-search-input" class="form-input" placeholder="e.g., Rice, Paneer...">
@@ -760,21 +742,32 @@
                 </div>
 
                 <div class="card" style="padding-top: 10px;">
-                    <h3>Today's Log</h3>
+                    <!-- UPDATED ID -->
+                    <h3 id="add-custom-goals-title">Today's Goals</h3>
+                    <div id="add-custom-goals-container" class="progress-goal-container">
+                        <!-- Progress bars will be injected here -->
+                    </div>
+                </div>
+
+                <div class="card" style="padding-top: 10px;">
+                    <!-- UPDATED ID -->
+                    <h3 id="add-custom-log-title">Today's Log</h3>
                     <div id="todays-log-list" class="todays-log-list">
                         <!-- Logged items will appear here -->
-                    </div>
-                    
-                    <h3 style="margin-top: 20px;">Today's Totals</h3>
-                    <div id="nutrition-summary" class="nutrition-summary">
-                        <!-- Summary will appear here -->
                     </div>
                 </div>
             </section>
             
-            <!-- NEW: Log Routine Page -->
+            <!-- Log Routine Page -->
             <section id="page-log-routine" class="page">
                 <h2 class="page-title"><i class="ph-light ph-plus-circle"></i>Log Routine Meal</h2>
+                
+                <!-- NEW DATE PICKER -->
+                <div class="form-group">
+                    <label for="log-date-picker-routine">Logging for date:</label>
+                    <input type="date" id="log-date-picker-routine" class="form-input" style="max-width: 200px;">
+                </div>
+
                 <p style="margin-bottom: 20px; font-size: 0.9rem; color: var(--text-light);">
                     Log your daily template meals with one click. Add boosters as needed.
                 </p>
@@ -798,7 +791,7 @@
                         <p><strong>Base:</strong> 3 Idlis + 1 serving Peanut Chutney</p>
                         <div class="routine-actions">
                             <button class="btn-log-base" data-meal="breakfast"><i class="ph ph-plus"></i>Log Base Breakfast</button>
-                            <button class="btn-log-booster" data-food-id="9"><i class="ph ph-plus-circle"></i>+ Ghee (Upma)</button>
+                            <button class="btn-log-booster" data-food-id="9"><i class="ph ph-plus-circle"></i>+ Ghee</button>
                         </div>
                     </div>
                 </div>
@@ -807,11 +800,11 @@
                 <div class="routine-meal-group">
                     <h3><i class="ph-light ph-bowl-food"></i>Lunch</h3>
                     <div class="routine-card">
-                        <p><strong>Base:</strong> 1 cup Rice + 1 cup Dal + 1 cup Curd</p>
+                        <p><strong>Base:</strong> 1.5 cups Rice + 1 cup Dal + 1 cup Curd</p>
                         <div class="routine-actions">
                             <button class="btn-log-base" data-meal="lunch"><i class="ph ph-plus"></i>Log Base Lunch</button>
                             <button class="btn-log-booster" data-food-id="9"><i class="ph ph-plus-circle"></i>+ Ghee</button>
-                            <button class="btn-log-booster" data-food-id="26"><i class="ph ph-plus-circle"></i>+ Badam</button>
+                            <button class="btn-log-booster" data-food-id="26"><i class="ph ph-plus-circle"></i>+ 5 Badam</button>
                         </div>
                     </div>
                 </div>
@@ -844,10 +837,22 @@
 
                 <!-- Logged Foods Quick View -->
                 <div class="card" style="padding-top: 10px;">
-                    <h3>Today's Log</h3>
+                    <!-- UPDATED ID -->
+                    <h3 id="routine-log-title">Today's Log</h3>
                     <div id="todays-log-list-routine" class="todays-log-list">
                         <!-- Logged items will appear here -->
                     </div>
+                </div>
+            </section>
+
+            <!-- History Page -->
+            <section id="page-history" class="page">
+                <h2 class="page-title"><i class="ph-light ph-chart-bar-horizontal"></i>7-Day History</h2>
+                <p style="margin-bottom: 20px; font-size: 0.9rem; color: var(--text-light);">
+                    Review your logged calories and weight for the past week.
+                </p>
+                <div id="history-report-container">
+                    <!-- History cards will be injected here -->
                 </div>
             </section>
 
@@ -880,6 +885,25 @@
     <!-- Toast Message -->
     <div id="toast-message"></div>
 
+    <!-- NEW: Quantity Modal -->
+    <div id="quantity-modal" class="modal-overlay" style="display: none;">
+        <div class="modal-content">
+            <h3 id="modal-title">Enter Quantity</h3>
+            <div class="modal-body">
+                <label id="modal-label" for="quantity-input">Quantity</label>
+                <div class="modal-input-group">
+                    <input type="number" id="quantity-input" class="form-input" value="1" step="0.1" min="0.1">
+                    <span id="modal-unit" class="modal-unit-label"></span>
+                </div>
+            </div>
+            <div class="modal-actions">
+                <button id="modal-cancel-btn" class="modal-btn-cancel">Cancel</button>
+                <button id="modal-add-btn" class="modal-btn-add">Add</button>
+            </div>
+        </div>
+    </div>
+
+
     <script>
         document.addEventListener('DOMContentLoaded', () => {
 
@@ -890,7 +914,7 @@
                     "meals": {
                         "breakfast": "2-3 Idlis with chutney. 1 glass milk.",
                         "mid_morning_snack": "1 Ripe Banana.",
-                        "lunch": "1 cup Rice + 1 cup Moong Dal (with ghee) + 1 cup Potato curry. Side of curd.",
+                        "lunch": "1.5 cup Rice + 1 cup Moong Dal (with ghee) + 1 cup Potato curry. Side of curd.",
                         "evening_snack": "1 glass Sweet Lassi or Milkshake.",
                         "dinner": "2 Rotis + 1 cup Paneer Bhurji + 1 cup vegetable soup."
                     }
@@ -905,12 +929,13 @@
                         "dinner": "2 Rotis + 1 cup Tofu Curry + 1 cup cooked carrot/pumpkin."
                     }
                 },
+                // ... (Rest of meal plan data is the same)
                 {
                     "day": "Wednesday",
                     "meals": {
                         "breakfast": "1 bowl Poha (with potatoes & peas).",
                         "mid_morning_snack": "1 glass Mango/Chikoo Shake.",
-                        "lunch": "1 cup Rice + 1 cup Masoor Dal + 1 cup Bhindi (Okra).",
+                        "lunch": "1.5 cup Rice + 1 cup Masoor Dal + 1 cup Bhindi (Okra).",
                         "evening_snack": "1/2 Avocado (mashed) with salt/lime.",
                         "dinner": "2-3 soft Dosas + 1 cup Sambar (with vegetables)."
                     }
@@ -940,7 +965,7 @@
                     "meals": {
                         "breakfast": "2-3 Paneer/Aloo Parathas (with ghee) + Curd.",
                         "mid_morning_snack": "1 glass Milkshake with dates.",
-                        "lunch": "1 cup Rice + 1 cup Sambar + 1 cup Mixed Veg (cooked soft).",
+                        "lunch": "1.5 cup Rice + 1 cup Sambar + 1 cup Mixed Veg (cooked soft).",
                         "evening_snack": "1 bowl Sweet Potato (boiled, with jaggery).",
                         "dinner": "1.5 cups Veg Pulao (with tofu/paneer) + 1 bowl Raita."
                     }
@@ -957,59 +982,102 @@
                 }
             ];
             
-            // --- NEW: SAMPLE FOOD DATABASE ---
-            // You can easily add more items here.
-            // I've included key items from your plan.
+            // --- NEW: REFACTORED FOOD DATABASE ---
+            // All nutrition is now per the 'base_unit'
             const FOOD_DATABASE = [
-                { id: 1, name: 'Rice, White (cooked)', serving: '1 cup (158g)', calories: 204, protein: 4.2, fat: 0.4, carbs: 44.2, calcium_mg: 15.8, iron_mg: 0.2 },
-                { id: 2, name: 'Moong Dal (cooked)', serving: '1 cup (202g)', calories: 212, protein: 14.2, fat: 0.8, carbs: 38.7, calcium_mg: 55, iron_mg: 2.7 },
-                { id: 3, name: 'Roti / Chapati', serving: '1 medium (60g)', calories: 170, protein: 5.8, fat: 4.9, carbs: 25.8, calcium_mg: 22, iron_mg: 1.5 },
-                { id: 4, name: 'Paneer', serving: '100g', calories: 296, protein: 18.3, fat: 22.8, carbs: 4.5, calcium_mg: 480, iron_mg: 1.1 },
-                { id: 5, name: 'Tofu, Soft', serving: '100g', calories: 61, protein: 6.9, fat: 3.5, carbs: 2.8, calcium_mg: 111, iron_mg: 1.1 },
-                { id: 6, name: 'Potato (cooked)', serving: '1 cup (156g)', calories: 134, protein: 3, fat: 0.1, carbs: 31.1, calcium_mg: 11, iron_mg: 0.5 },
-                { id: 7, name: 'Banana, Ripe', serving: '1 medium (118g)', calories: 105, protein: 1.3, fat: 0.4, carbs: 27, calcium_mg: 5.9, iron_mg: 0.3 },
-                { id: 8, name: 'Milk, Full Fat (3.5%)', serving: '1 cup (244g)', calories: 149, protein: 7.7, fat: 8, carbs: 11.7, calcium_mg: 276, iron_mg: 0.1 },
-                { id: 9, name: 'Ghee', serving: '1 tbsp (14g)', calories: 123, protein: 0, fat: 14, carbs: 0, calcium_mg: 0, iron_mg: 0 },
-                { id: 10, name: 'Peanut Butter', serving: '2 tbsp (32g)', calories: 188, protein: 8, fat: 16, carbs: 6.9, calcium_mg: 13, iron_mg: 0.6 },
-                { id: 11, name: 'Yogurt / Curd (Full Fat)', serving: '1 cup (245g)', calories: 149, protein: 8.5, fat: 8, carbs: 11.4, calcium_mg: 296, iron_mg: 0.1 },
-                { id: 12, name: 'Oats (cooked in water)', serving: '1 cup (234g)', calories: 143, protein: 6, fat: 2.5, carbs: 25.3, calcium_mg: 19, iron_mg: 1.7 },
-                { id: 13, name: 'Avocado', serving: '1/2 fruit (100g)', calories: 160, protein: 2, fat: 14.7, carbs: 8.5, calcium_mg: 12, iron_mg: 0.6 },
-                // --- NEW FOODS ADDED ---
-                { id: 14, name: 'Apple', serving: '1 medium (182g)', calories: 95, protein: 0.5, fat: 0.3, carbs: 25.1, calcium_mg: 10.9, iron_mg: 0.2 },
-                { id: 15, name: 'Grapes, Black', serving: '1 cup (151g)', calories: 104, protein: 1.1, fat: 0.2, carbs: 27.3, calcium_mg: 15.1, iron_mg: 0.5 },
-                { id: 16, name: 'Pineapple', serving: '1 cup chunks (165g)', calories: 83, protein: 0.9, fat: 0.2, carbs: 21.6, calcium_mg: 21.5, iron_mg: 0.5 },
-                { id: 17, name: 'Toor Dal (cooked)', serving: '1 cup (172g)', calories: 205, protein: 12.9, fat: 0.9, carbs: 36.5, calcium_mg: 39.6, iron_mg: 2.2 },
-                { id: 18, name: 'Idli', serving: '1 medium (39g)', calories: 58, protein: 1.9, fat: 0.2, carbs: 12.1, calcium_mg: 6.2, iron_mg: 0.3 },
-                { id: 19, name: 'Dosa, Plain', serving: '1 medium (85g)', calories: 168, protein: 3.9, fat: 6.8, carbs: 29, calcium_mg: 9.4, iron_mg: 0.9 },
-                { id: 20, name: 'Peanut Chutney', serving: '2 tbsp (30g)', calories: 90, protein: 3.5, fat: 7.5, carbs: 4, calcium_mg: 10, iron_mg: 0.4 },
-                { id: 21, name: 'Bread, White', serving: '1 slice (30g)', calories: 80, protein: 2.7, fat: 1, carbs: 14.8, calcium_mg: 30, iron_mg: 0.9 },
-                { id: 22, name: 'Peanut Chikki', serving: '1 piece (15g)', calories: 73, protein: 2, fat: 4.5, carbs: 6.8, calcium_mg: 10, iron_mg: 0.3 },
-                { id: 23, name: 'Khoa / Mawa', serving: '30g (approx 1 oz)', calories: 108, protein: 5.2, fat: 7.8, carbs: 4.3, calcium_mg: 130, iron_mg: 0.1 },
-                { id: 24, name: 'Upma, Rava', serving: '1 cup (160g)', calories: 250, protein: 5.5, fat: 8.5, carbs: 38.1, calcium_mg: 18, iron_mg: 1.1 },
-                { id: 25, name: 'Puffed Rice (Murmura)', serving: '1 cup (14g)', calories: 56, protein: 1, fat: 0.1, carbs: 12.6, calcium_mg: 0.8, iron_mg: 4.4 },
-                { id: 26, name: 'Almonds (Badam)', serving: '10 nuts (12g)', calories: 70, protein: 2.6, fat: 6, carbs: 2.6, calcium_mg: 32.8, iron_mg: 0.4 },
-                { id: 27, name: 'Cashews (Kaju)', serving: '10 nuts (11g)', calories: 61, protein: 2, fat: 5.1, carbs: 3.6, calcium_mg: 4.1, iron_mg: 0.7 },
-                { id: 28, name: 'Raisins (Kishmish)', serving: '2 tbsp (20g)', calories: 60, protein: 0.6, fat: 0.1, carbs: 15.9, calcium_mg: 10, iron_mg: 0.4 },
-                { id: 29, name: 'Marie Biscuit', serving: '2 biscuits (10g)', calories: 45, protein: 0.7, fat: 1.2, carbs: 7.8, calcium_mg: 6, iron_mg: 0.2 },
-                { id: 30, name: 'Ven Pongal', serving: '1 cup (204g)', calories: 339, protein: 9.8, fat: 12.8, carbs: 46.5, calcium_mg: 37, iron_mg: 1.9 },
-                { id: 31, name: 'Cucumber (Keera)', serving: '1 cup sliced (104g)', calories: 16, protein: 0.7, fat: 0.1, carbs: 3.8, calcium_mg: 16.6, iron_mg: 0.3 },
-                { id: 32, name: 'Beetroot (cooked)', serving: '1 cup (170g)', calories: 75, protein: 2.9, fat: 0.3, carbs: 17.6, calcium_mg: 27.2, iron_mg: 1.4 },
-                { id: 33, name: 'Carrot (raw)', serving: '1 medium (61g)', calories: 25, protein: 0.6, fat: 0.1, carbs: 5.8, calcium_mg: 20.1, iron_mg: 0.2 },
-                { id: 34, name: 'Sambar', serving: '1 cup (250ml)', calories: 115, protein: 5, fat: 3.5, carbs: 18.2, calcium_mg: 40, iron_mg: 1.1 },
-                // --- ADDED FOR ROUTINE ---
-                { id: 35, name: 'Coffee (with milk, sugar)', serving: '1 cup (250ml)', calories: 60, protein: 3, fat: 3, carbs: 6, calcium_mg: 110, iron_mg: 0.1 },
-                { id: 36, name: 'Good Day Biscuit', serving: '1 biscuit (12g)', calories: 50, protein: 0.6, fat: 2.3, carbs: 6.8, calcium_mg: 5, iron_mg: 0.2 }
+                // { id: 1, name: 'Rice, White (cooked)', serving: '1 cup (158g)', calories: 204, protein: 4.2, fat: 0.4, carbs: 44.2, calcium_mg: 15.8, iron_mg: 0.2 },
+                { id: 1, name: 'Rice, White (cooked)', base_unit: 'cup', calories: 204, protein: 4.2, fat: 0.4, carbs: 44.2, calcium_mg: 15.8, iron_mg: 0.2 },
+                // { id: 2, name: 'Moong Dal (cooked)', serving: '1 cup (202g)', calories: 212, protein: 14.2, fat: 0.8, carbs: 38.7, calcium_mg: 55, iron_mg: 2.7 },
+                { id: 2, name: 'Moong Dal (cooked)', base_unit: 'cup', calories: 212, protein: 14.2, fat: 0.8, carbs: 38.7, calcium_mg: 55, iron_mg: 2.7 },
+                // { id: 3, name: 'Roti / Chapati', serving: '1 medium (60g)', calories: 170, protein: 5.8, fat: 4.9, carbs: 25.8, calcium_mg: 22, iron_mg: 1.5 },
+                { id: 3, name: 'Roti / Chapati', base_unit: 'piece', calories: 170, protein: 5.8, fat: 4.9, carbs: 25.8, calcium_mg: 22, iron_mg: 1.5 },
+                // { id: 4, name: 'Paneer', serving: '100g', calories: 296, protein: 18.3, fat: 22.8, carbs: 4.5, calcium_mg: 480, iron_mg: 1.1 },
+                { id: 4, name: 'Paneer', base_unit: 'g', calories: 2.96, protein: 0.18, fat: 0.23, carbs: 0.05, calcium_mg: 4.8, iron_mg: 0.01 }, // Per 1g
+                // { id: 5, name: 'Tofu, Soft', serving: '100g', calories: 61, protein: 6.9, fat: 3.5, carbs: 2.8, calcium_mg: 111, iron_mg: 1.1 },
+                { id: 5, name: 'Tofu, Soft', base_unit: 'g', calories: 0.61, protein: 0.07, fat: 0.04, carbs: 0.03, calcium_mg: 1.1, iron_mg: 0.01 }, // Per 1g
+                // { id: 6, name: 'Potato (cooked)', serving: '1 cup (156g)', calories: 134, protein: 3, fat: 0.1, carbs: 31.1, calcium_mg: 11, iron_mg: 0.5 },
+                { id: 6, name: 'Potato (cooked)', base_unit: 'cup', calories: 134, protein: 3, fat: 0.1, carbs: 31.1, calcium_mg: 11, iron_mg: 0.5 },
+                // { id: 7, name: 'Banana, Ripe', serving: '1 medium (118g)', calories: 105, protein: 1.3, fat: 0.4, carbs: 27, calcium_mg: 5.9, iron_mg: 0.3 },
+                { id: 7, name: 'Banana, Ripe', base_unit: 'fruit', calories: 105, protein: 1.3, fat: 0.4, carbs: 27, calcium_mg: 5.9, iron_mg: 0.3 },
+                // { id: 8, name: 'Milk, Full Fat (3.5%)', serving: '1 cup (244g)', calories: 149, protein: 7.7, fat: 8, carbs: 11.7, calcium_mg: 276, iron_mg: 0.1 },
+                { id: 8, name: 'Milk, Full Fat (3.5%)', base_unit: 'cup', calories: 149, protein: 7.7, fat: 8, carbs: 11.7, calcium_mg: 276, iron_mg: 0.1 },
+                // { id: 9, name: 'Ghee', serving: '1 tbsp (14g)', calories: 123, protein: 0, fat: 14, carbs: 0, calcium_mg: 0, iron_mg: 0 },
+                { id: 9, name: 'Ghee', base_unit: 'tbsp', calories: 123, protein: 0, fat: 14, carbs: 0, calcium_mg: 0, iron_mg: 0 },
+                // { id: 10, name: 'Peanut Butter', serving: '2 tbsp (32g)', calories: 188, protein: 8, fat: 16, carbs: 6.9, calcium_mg: 13, iron_mg: 0.6 },
+                { id: 10, name: 'Peanut Butter', base_unit: 'tbsp', calories: 94, protein: 4, fat: 8, carbs: 3.5, calcium_mg: 6.5, iron_mg: 0.3 }, // Per 1 tbsp
+                // { id: 11, name: 'Yogurt / Curd (Full Fat)', serving: '1 cup (245g)', calories: 149, protein: 8.5, fat: 8, carbs: 11.4, calcium_mg: 296, iron_mg: 0.1 },
+                { id: 11, name: 'Yogurt / Curd (Full Fat)', base_unit: 'cup', calories: 149, protein: 8.5, fat: 8, carbs: 11.4, calcium_mg: 296, iron_mg: 0.1 },
+                // { id: 12, name: 'Oats (cooked in water)', serving: '1 cup (234g)', calories: 143, protein: 6, fat: 2.5, carbs: 25.3, calcium_mg: 19, iron_mg: 1.7 },
+                { id: 12, name: 'Oats (cooked)', base_unit: 'cup', calories: 143, protein: 6, fat: 2.5, carbs: 25.3, calcium_mg: 19, iron_mg: 1.7 },
+                // { id: 13, name: 'Avocado', serving: '1/2 fruit (100g)', calories: 160, protein: 2, fat: 14.7, carbs: 8.5, calcium_mg: 12, iron_mg: 0.6 },
+                { id: 13, name: 'Avocado', base_unit: 'g', calories: 1.6, protein: 0.02, fat: 0.15, carbs: 0.09, calcium_mg: 0.12, iron_mg: 0.006 }, // Per 1g
+                // { id: 14, name: 'Apple', serving: '1 medium (182g)', calories: 95, protein: 0.5, fat: 0.3, carbs: 25.1, calcium_mg: 10.9, iron_mg: 0.2 },
+                { id: 14, name: 'Apple', base_unit: 'fruit', calories: 95, protein: 0.5, fat: 0.3, carbs: 25.1, calcium_mg: 10.9, iron_mg: 0.2 },
+                // { id: 15, name: 'Grapes, Black', serving: '1 cup (151g)', calories: 104, protein: 1.1, fat: 0.2, carbs: 27.3, calcium_mg: 15.1, iron_mg: 0.5 },
+                { id: 15, name: 'Grapes, Black', base_unit: 'cup', calories: 104, protein: 1.1, fat: 0.2, carbs: 27.3, calcium_mg: 15.1, iron_mg: 0.5 },
+                // { id: 16, name: 'Pineapple', serving: '1 cup chunks (165g)', calories: 83, protein: 0.9, fat: 0.2, carbs: 21.6, calcium_mg: 21.5, iron_mg: 0.5 },
+                { id: 16, name: 'Pineapple', base_unit: 'cup', calories: 83, protein: 0.9, fat: 0.2, carbs: 21.6, calcium_mg: 21.5, iron_mg: 0.5 },
+                // { id: 17, name: 'Toor Dal (cooked)', serving: '1 cup (172g)', calories: 205, protein: 12.9, fat: 0.9, carbs: 36.5, calcium_mg: 39.6, iron_mg: 2.2 },
+                { id: 17, name: 'Toor Dal (cooked)', base_unit: 'cup', calories: 205, protein: 12.9, fat: 0.9, carbs: 36.5, calcium_mg: 39.6, iron_mg: 2.2 },
+                // { id: 18, name: 'Idli', serving: '1 medium (39g)', calories: 58, protein: 1.9, fat: 0.2, carbs: 12.1, calcium_mg: 6.2, iron_mg: 0.3 },
+                { id: 18, name: 'Idli', base_unit: 'piece', calories: 58, protein: 1.9, fat: 0.2, carbs: 12.1, calcium_mg: 6.2, iron_mg: 0.3 },
+                // { id: 19, name: 'Dosa, Plain', serving: '1 medium (85g)', calories: 168, protein: 3.9, fat: 6.8, carbs: 29, calcium_mg: 9.4, iron_mg: 0.9 },
+                { id: 19, name: 'Dosa, Plain', base_unit: 'piece', calories: 168, protein: 3.9, fat: 6.8, carbs: 29, calcium_mg: 9.4, iron_mg: 0.9 },
+                // { id: 20, name: 'Peanut Chutney', serving: '2 tbsp (30g)', calories: 90, protein: 3.5, fat: 7.5, carbs: 4, calcium_mg: 10, iron_mg: 0.4 },
+                { id: 20, name: 'Peanut Chutney', base_unit: 'serving (2tbsp)', calories: 90, protein: 3.5, fat: 7.5, carbs: 4, calcium_mg: 10, iron_mg: 0.4 },
+                // { id: 21, name: 'Bread, White', serving: '1 slice (30g)', calories: 80, protein: 2.7, fat: 1, carbs: 14.8, calcium_mg: 30, iron_mg: 0.9 },
+                { id: 21, name: 'Bread, White', base_unit: 'slice', calories: 80, protein: 2.7, fat: 1, carbs: 14.8, calcium_mg: 30, iron_mg: 0.9 },
+                // { id: 22, name: 'Peanut Chikki', serving: '1 piece (15g)', calories: 73, protein: 2, fat: 4.5, carbs: 6.8, calcium_mg: 10, iron_mg: 0.3 },
+                { id: 22, name: 'Peanut Chikki', base_unit: 'piece', calories: 73, protein: 2, fat: 4.5, carbs: 6.8, calcium_mg: 10, iron_mg: 0.3 },
+                // { id: 23, name: 'Khoa / Mawa', serving: '30g (approx 1 oz)', calories: 108, protein: 5.2, fat: 7.8, carbs: 4.3, calcium_mg: 130, iron_mg: 0.1 },
+                { id: 23, name: 'Khoa / Mawa', base_unit: 'g', calories: 3.6, protein: 0.17, fat: 0.26, carbs: 0.14, calcium_mg: 4.3, iron_mg: 0.003 }, // Per 1g
+                // { id: 24, name: 'Upma, Rava', serving: '1 cup (160g)', calories: 250, protein: 5.5, fat: 8.5, carbs: 38.1, calcium_mg: 18, iron_mg: 1.1 },
+                { id: 24, name: 'Upma, Rava', base_unit: 'cup', calories: 250, protein: 5.5, fat: 8.5, carbs: 38.1, calcium_mg: 18, iron_mg: 1.1 },
+                // { id: 25, name: 'Puffed Rice (Murmura)', serving: '1 cup (14g)', calories: 56, protein: 1, fat: 0.1, carbs: 12.6, calcium_mg: 0.8, iron_mg: 4.4 },
+                { id: 25, name: 'Puffed Rice (Murmura)', base_unit: 'cup', calories: 56, protein: 1, fat: 0.1, carbs: 12.6, calcium_mg: 0.8, iron_mg: 4.4 },
+                // { id: 26, name: 'Almonds (Badam)', serving: '10 nuts (12g)', calories: 70, protein: 2.6, fat: 6, carbs: 2.6, calcium_mg: 32.8, iron_mg: 0.4 },
+                { id: 26, name: 'Almonds (Badam)', base_unit: 'nut', calories: 7, protein: 0.26, fat: 0.6, carbs: 0.26, calcium_mg: 3.3, iron_mg: 0.04 }, // Per 1 nut
+                // { id: 27, name: 'Cashews (Kaju)', serving: '10 nuts (11g)', calories: 61, protein: 2, fat: 5.1, carbs: 3.6, calcium_mg: 4.1, iron_mg: 0.7 },
+                { id: 27, name: 'Cashews (Kaju)', base_unit: 'nut', calories: 6.1, protein: 0.2, fat: 0.51, carbs: 0.36, calcium_mg: 0.4, iron_mg: 0.07 }, // Per 1 nut
+                // { id: 28, name: 'Raisins (Kishmish)', serving: '2 tbsp (20g)', calories: 60, protein: 0.6, fat: 0.1, carbs: 15.9, calcium_mg: 10, iron_mg: 0.4 },
+                { id: 28, name: 'Raisins (Kishmish)', base_unit: 'tbsp', calories: 30, protein: 0.3, fat: 0.05, carbs: 7.95, calcium_mg: 5, iron_mg: 0.2 }, // Per 1 tbsp
+                // { id: 29, name: 'Marie Biscuit', serving: '2 biscuits (10g)', calories: 45, protein: 0.7, fat: 1.2, carbs: 7.8, calcium_mg: 6, iron_mg: 0.2 },
+                { id: 29, name: 'Marie Biscuit', base_unit: 'biscuit', calories: 22.5, protein: 0.35, fat: 0.6, carbs: 3.9, calcium_mg: 3, iron_mg: 0.1 }, // Per 1 biscuit
+                // { id: 30, name: 'Ven Pongal', serving: '1 cup (204g)', calories: 339, protein: 9.8, fat: 12.8, carbs: 46.5, calcium_mg: 37, iron_mg: 1.9 },
+                { id: 30, name: 'Ven Pongal', base_unit: 'cup', calories: 339, protein: 9.8, fat: 12.8, carbs: 46.5, calcium_mg: 37, iron_mg: 1.9 },
+                // { id: 31, name: 'Cucumber (Keera)', serving: '1 cup sliced (104g)', calories: 16, protein: 0.7, fat: 0.1, carbs: 3.8, calcium_mg: 16.6, iron_mg: 0.3 },
+                { id: 31, name: 'Cucumber (Keera)', base_unit: 'cup', calories: 16, protein: 0.7, fat: 0.1, carbs: 3.8, calcium_mg: 16.6, iron_mg: 0.3 },
+                // { id: 32, name: 'Beetroot (cooked)', serving: '1 cup (170g)', calories: 75, protein: 2.9, fat: 0.3, carbs: 17.6, calcium_mg: 27.2, iron_mg: 1.4 },
+                { id: 32, name: 'Beetroot (cooked)', base_unit: 'cup', calories: 75, protein: 2.9, fat: 0.3, carbs: 17.6, calcium_mg: 27.2, iron_mg: 1.4 },
+                // { id: 33, name: 'Carrot (raw)', serving: '1 medium (61g)', calories: 25, protein: 0.6, fat: 0.1, carbs: 5.8, calcium_mg: 20.1, iron_mg: 0.2 },
+                { id: 33, name: 'Carrot (raw)', base_unit: 'medium', calories: 25, protein: 0.6, fat: 0.1, carbs: 5.8, calcium_mg: 20.1, iron_mg: 0.2 },
+                // { id: 34, name: 'Sambar', serving: '1 cup (250ml)', calories: 115, protein: 5, fat: 3.5, carbs: 18.2, calcium_mg: 40, iron_mg: 1.1 },
+                { id: 34, name: 'Sambar', base_unit: 'cup', calories: 115, protein: 5, fat: 3.5, carbs: 18.2, calcium_mg: 40, iron_mg: 1.1 },
+                // { id: 35, name: 'Coffee (with milk, sugar)', serving: '1 cup (250ml)', calories: 60, protein: 3, fat: 3, carbs: 6, calcium_mg: 110, iron_mg: 0.1 },
+                { id: 35, name: 'Coffee (with milk, sugar)', base_unit: 'cup', calories: 60, protein: 3, fat: 3, carbs: 6, calcium_mg: 110, iron_mg: 0.1 },
+                // { id: 36, name: 'Good Day Biscuit', serving: '1 biscuit (12g)', calories: 50, protein: 0.6, fat: 2.3, carbs: 6.8, calcium_mg: 5, iron_mg: 0.2 },
+                { id: 36, name: 'Good Day Biscuit', base_unit: 'biscuit', calories: 50, protein: 0.6, fat: 2.3, carbs: 6.8, calcium_mg: 5, iron_mg: 0.2 }
             ];
 
-            // --- NEW: ROUTINE TEMPLATE ---
-            // Maps the data-meal attribute to an array of food IDs from the database
+
+            // --- DAILY NUTRITION GOALS ---
+            const DAILY_GOALS = {
+                calories: 2200,
+                protein: 75, // ~1.8-2.0g per kg body weight
+                fat: 70, // ~30% of calories
+                carbs: 315, // Remaining calories
+                calcium_mg: 1000, // RDI
+                iron_mg: 18 // RDI
+            };
+
+            // --- NEW: REFACTORED ROUTINE TEMPLATE (with quantities) ---
             const ROUTINE_TEMPLATE = {
-                'morning_drink': [8], // 1 cup Milk
-                'morning_coffee': [35], // 1 cup Coffee
-                'breakfast': [18, 18, 18, 20], // 3 Idlis, 1 Peanut Chutney
-                'lunch': [1, 2, 11], // 1 Rice, 1 Moong Dal, 1 Curd
-                'snack': [35, 36, 36], // 1 Coffee, 2 Good Day Biscuits
-                'dinner': [3, 3, 34] // 2 Rotis, 1 Sambar
+                'morning_drink': [ {id: 8, qty: 1} ], // 1 cup Milk
+                'morning_coffee': [ {id: 35, qty: 1} ], // 1 cup Coffee
+                'breakfast': [ {id: 18, qty: 3}, {id: 20, qty: 1} ], // 3 Idlis, 1 Peanut Chutney
+                'lunch': [ {id: 1, qty: 1.5}, {id: 2, qty: 1}, {id: 11, qty: 1} ], // 1.5 Rice, 1 Moong Dal, 1 Curd
+                'snack': [ {id: 35, qty: 1}, {id: 36, qty: 2} ], // 1 Coffee, 2 Good Day Biscuits
+                'dinner': [ {id: 3, qty: 2}, {id: 34, qty: 1} ] // 2 Rotis, 1 Sambar
             };
 
             const MEAL_TYPE_MAP = { 'breakfast': 'Breakfast', 'mid_morning_snack': 'Morning Snack', 'lunch': 'Lunch', 'evening_snack': 'Evening Snack', 'dinner': 'Dinner' };
@@ -1037,34 +1105,74 @@
             const statTotalGained = document.getElementById('stat-total-gained');
             const weightLogForm = document.getElementById('weight-log-form');
             const weightInput = document.getElementById('weight-input');
-            const statMealsLogged = document.getElementById('stat-meals-logged');
-            const statCaloriesLogged = document.getElementById('stat-calories-logged');
+            const weightLogDate = document.getElementById('weight-log-date'); // NEW
             const motivationQuote = document.getElementById('motivation-quote');
+            const dashboardGoalsContainer = document.getElementById('dashboard-goals-container');
 
-            // Meal Ideas
-            const daySelectorContainer = document.getElementById('day-selector');
-            const mealListContainer = document.getElementById('meal-list');
-
-            // Add Food
+            // Add Custom
             const foodSearchInput = document.getElementById('food-search-input');
             const foodSearchResults = document.getElementById('food-search-results');
             const todaysLogList = document.getElementById('todays-log-list');
-            const nutritionSummary = document.getElementById('nutrition-summary');
+            const addCustomGoalsContainer = document.getElementById('add-custom-goals-container');
             const foodDatabaseListContainer = document.getElementById('food-database-list');
 
             // Routine Log Page
             const routineLogPage = document.getElementById('page-log-routine');
             const todaysLogListRoutine = document.getElementById('todays-log-list-routine');
 
+            // NEW: Date Pickers and Log Titles
+            const logDatePickerCustom = document.getElementById('log-date-picker-custom');
+            const logDatePickerRoutine = document.getElementById('log-date-picker-routine');
+            const addCustomGoalsTitle = document.getElementById('add-custom-goals-title');
+            const addCustomLogTitle = document.getElementById('add-custom-log-title');
+            const routineLogTitle = document.getElementById('routine-log-title');
+
+            // History Page
+            const historyReportContainer = document.getElementById('history-report-container');
+            
+            // Meal Ideas
+            const daySelectorContainer = document.getElementById('day-selector');
+            const mealListContainer = document.getElementById('meal-list');
+
+            // Modal
+            const quantityModal = document.getElementById('quantity-modal');
+            const modalTitle = document.getElementById('modal-title');
+            const modalLabel = document.getElementById('modal-label');
+            const quantityInput = document.getElementById('quantity-input');
+            const modalUnit = document.getElementById('modal-unit');
+            const modalCancelBtn = document.getElementById('modal-cancel-btn');
+            const modalAddBtn = document.getElementById('modal-add-btn');
+
             // --- 3. STATE ---
             let selectedPlanDay = getCurrentDayName();
             let userProfile = {};
             let weightLog = [];
             let mealLog = {};
+            let foodToAddWithModal = null; // Store food object when modal is open
+            let selectedLogDate = getTodayDateString(); // NEW: State for selected log date
 
             // --- 4. HELPER FUNCTIONS ---
             function getTodayDateString() {
-                return new Date().toISOString().split('T')[0];
+                const today = new Date();
+                return today.toISOString().split('T')[0];
+            }
+
+            // Helper to get date string for N days ago
+            function getDateStringDaysAgo(days) {
+                const date = new Date();
+                date.setDate(date.getDate() - days);
+                return date.toISOString().split('T')[0];
+            }
+            
+            // Helper to format date for display
+            function formatDisplayDate(dateStr) {
+                const date = new Date(dateStr);
+                const options = { weekday: 'long', month: 'short', day: 'numeric' };
+                // Add time zone to prevent off-by-one day errors
+                date.setMinutes(date.getMinutes() + date.getTimezoneOffset());
+                if (dateStr === getTodayDateString()) return "Today";
+                if (dateStr === getDateStringDaysAgo(1)) return "Yesterday";
+                return date.toLocaleDateString('en-US', options);
             }
 
             function getCurrentDayName() {
@@ -1081,7 +1189,6 @@
             
             // --- 5. LOCALSTORAGE FUNCTIONS ---
             function loadData() {
-                // Profile: Start weight 39kg, Goal +1kg/month
                 userProfile = JSON.parse(localStorage.getItem('userProfile')) || {
                     startWeight: 39,
                     goalPerMonth: 1,
@@ -1089,9 +1196,10 @@
                 };
                 
                 weightLog = JSON.parse(localStorage.getItem('weightLog')) || [];
+                weightLog.sort((a, b) => new Date(a.date) - new Date(b.date)); // Sort by date
+                
                 mealLog = JSON.parse(localStorage.getItem('mealLog')) || {};
                 
-                // Ensure profile has start weight if log is empty
                 if (weightLog.length === 0) {
                      userProfile.startWeight = 39;
                      localStorage.setItem('userProfile', JSON.stringify(userProfile));
@@ -1108,32 +1216,31 @@
 
             // --- 6. PAGE NAVIGATION ---
             function showPage(pageId) {
-                // Hide all pages
                 pages.forEach(page => page.classList.remove('active'));
-                
-                // Deactivate all nav tabs
                 mainNav.querySelectorAll('.nav-tab').forEach(tab => tab.classList.remove('active'));
                 
-                // Show the target page
                 const targetPage = document.getElementById(`page-${pageId}`);
-                if (targetPage) {
-                    targetPage.classList.add('active');
-                }
+                if (targetPage) targetPage.classList.add('active');
                 
-                // Activate the target nav tab
                 const targetTab = mainNav.querySelector(`.nav-tab[data-page="${pageId}"]`);
-                if (targetTab) {
-                    targetTab.classList.add('active');
-                }
+                if (targetTab) targetTab.classList.add('active');
                 
                 // Load content for the page
                 if (pageId === 'dashboard') {
                     renderDashboard();
-                } else if (pageId === 'add-custom') { // Renamed from 'add-food'
-                    renderTodaysLog('add-custom'); // Pass page context
+                    // Set weight log date to today (or last selected, but today is safer for dashboard)
+                    weightLogDate.value = getTodayDateString();
+                } else if (pageId === 'add-custom') {
+                    // Set date picker to current selected date
+                    logDatePickerCustom.value = selectedLogDate;
+                    renderTodaysLog('add-custom'); // This will render goals too
                     foodSearchInput.focus();
                 } else if (pageId === 'log-routine') {
-                    renderTodaysLog('log-routine'); // Pass page context
+                    // Set date picker to current selected date
+                    logDatePickerRoutine.value = selectedLogDate;
+                    renderTodaysLog('log-routine');
+                } else if (pageId === 'history') {
+                    renderHistoryReport();
                 } else if (pageId === 'plan') {
                     renderDayTabs();
                     renderMealIdeas(selectedPlanDay);
@@ -1151,78 +1258,121 @@
 
             // --- 7. DASHBOARD LOGIC ---
             function renderDashboard() {
-                loadData(); // Ensure data is fresh
+                loadData(); 
                 
                 const startWeight = userProfile.startWeight;
                 let currentWeight = startWeight;
                 
+                // weightLog is now pre-sorted on load
                 if (weightLog.length > 0) {
-                    // Get the most recent weight log
                     currentWeight = weightLog[weightLog.length - 1].weight;
                 }
                 
                 const totalGained = (currentWeight - startWeight).toFixed(1);
                 
-                // Calculate goal weight
                 const startDate = new Date(userProfile.startDate);
                 const today = new Date();
                 const monthsPassed = (today.getFullYear() - startDate.getFullYear()) * 12 + (today.getMonth() - startDate.getMonth());
-                const goalWeight = startWeight + (userProfile.goalPerMonth * (monthsPassed + 1)); // Goal for *end* of current month
+                const goalWeight = startWeight + (userProfile.goalPerMonth * (monthsPassed + 1)); 
 
                 statStartWeight.textContent = `${startWeight} kg`;
                 statCurrentWeight.textContent = `${currentWeight} kg`;
                 statTotalGained.textContent = `${totalGained} kg`;
                 statGoalWeight.textContent = `${goalWeight.toFixed(1)} kg`;
                 
-                // Today's meal/calorie summary
-                const todayDateStr = getTodayDateString();
-                const todayMeals = mealLog[todayDateStr] || [];
-                
-                const totalMeals = todayMeals.length;
-                
-                // Calculate calories from the log
-                const totalCalories = todayMeals.reduce((sum, logEntry) => {
-                    const food = FOOD_DATABASE.find(f => f.id === logEntry.dbId);
-                    // Assuming quantity is always 1 for this simple log
-                    return sum + (food ? food.calories : 0); 
-                }, 0);
-                
-                statMealsLogged.textContent = totalMeals;
-                statCaloriesLogged.textContent = totalCalories;
-                
-                // Motivation
                 motivationQuote.textContent = MOTIVATIONAL_QUOTES[new Date().getDate() % MOTIVATIONAL_QUOTES.length];
+
+                // Render the goals
+                renderDailyGoals('dashboard');
             }
             
             weightLogForm.addEventListener('submit', (e) => {
                 e.preventDefault();
                 const weight = parseFloat(weightInput.value);
-                if (weight > 30 && weight < 100) { // Basic validation
+                if (weight > 30 && weight < 100) { 
+                    const logDate = weightLogDate.value || getTodayDateString(); // Use selected date
                     const newLogEntry = {
-                        date: getTodayDateString(),
+                        date: logDate,
                         weight: weight
                     };
                     
-                    // Add or update today's log
-                    const todayIndex = weightLog.findIndex(entry => entry.date === newLogEntry.date);
-                    if (todayIndex > -1) {
-                        weightLog[todayIndex] = newLogEntry; // Update
+                    const entryIndex = weightLog.findIndex(entry => entry.date === newLogEntry.date);
+                    if (entryIndex > -1) {
+                        weightLog[entryIndex] = newLogEntry; // Update existing
                     } else {
                         weightLog.push(newLogEntry); // Add new
                     }
                     
+                    weightLog.sort((a, b) => new Date(a.date) - new Date(b.date)); // Re-sort
+                    
                     saveWeightLog();
-                    showToast('Weight logged successfully!');
+                    showToast(`Weight for ${formatDisplayDate(logDate)} logged!`);
                     weightInput.value = '';
-                    renderDashboard(); // Refresh stats
+                    renderDashboard(); // Re-render dashboard with new current weight
                 } else {
                     showToast('Please enter a valid weight.');
                 }
             });
 
-            // --- 8. LOG MEAL LOGIC ---
+            // --- 8. LOG MEAL LOGIC (NOW WITH QUANTITY) ---
             
-            // Render search results based on input
+            // NEW: Central function to get totals for any day
+            // This is the new "engine" for all calculations
+            function getTotalsForDay(dateStr) {
+                const dayMeals = mealLog[dateStr] || [];
+                const totals = {
+                    calories: 0, protein: 0, fat: 0, carbs: 0, calcium_mg: 0, iron_mg: 0
+                };
+
+                dayMeals.forEach(logEntry => {
+                    const food = FOOD_DATABASE.find(f => f.id === logEntry.dbId);
+                    const quantity = logEntry.qty; // The saved quantity
+                    if (food && quantity) {
+                        totals.calories += (food.calories * quantity);
+                        totals.protein += (food.protein * quantity);
+                        totals.fat += (food.fat * quantity);
+                        totals.carbs += (food.carbs * quantity);
+                        totals.calcium_mg += (food.calcium_mg * quantity);
+                        totals.iron_mg += (food.iron_mg * quantity);
+                    }
+                });
+                return totals;
+            }
+
+            // NEW: Log a food entry with quantity
+            function logFoodEntry(food, quantity) {
+                if (!food || !quantity || quantity <= 0) {
+                    showToast("Invalid quantity.");
+                    return;
+                }
+
+                const newLogEntry = {
+                    dbId: food.id,
+                    name: food.name,
+                    // Format "serving" string based on quantity
+                    serving: `${quantity} ${food.base_unit}${quantity > 1 && food.base_unit !== 'g' && food.base_unit.slice(-1) !== 's' ? 's' : ''}`,
+                    qty: quantity
+                };
+                
+                const dateStr = selectedLogDate; // Use selected date
+                if (!mealLog[dateStr]) {
+                    mealLog[dateStr] = [];
+                }
+                
+                mealLog[dateStr].push(newLogEntry);
+                saveMealLog();
+                
+                showToast(`${newLogEntry.name} added to ${formatDisplayDate(dateStr)}!`);
+                foodSearchInput.value = '';
+                foodSearchResults.innerHTML = '';
+                
+                // Refresh all relevant UI parts
+                renderTodaysLog('add-custom');
+                renderDailyGoals('dashboard'); // Keep dashboard up-to-date for *today*
+                // renderDailyGoals('add-custom') is called by renderTodaysLog
+            }
+
+
             function renderSearchResults(query) {
                 if (!query) {
                     foodSearchResults.innerHTML = '';
@@ -1236,128 +1386,117 @@
                 foodSearchResults.innerHTML = results.map(food => `
                     <div class="food-result-item" data-id="${food.id}">
                         <p>${food.name}</p>
-                        <span>${food.serving} &bull; ${food.calories} kcal</span>
+                        <span>per ${food.base_unit} &bull; ${food.calories.toFixed(0)} kcal</span>
                     </div>
                 `).join('');
             }
             
-            // Add a food to today's log
-            function addFoodToLog(foodId) {
-                const food = FOOD_DATABASE.find(f => f.id === foodId);
-                if (!food) return;
-
-                const newLogEntry = {
-                    dbId: food.id,
-                    name: food.name,
-                    serving: food.serving
-                    // In a real app, you'd add a quantity prompt here
-                };
-                
-                const todayDateStr = getTodayDateString();
-                if (!mealLog[todayDateStr]) {
-                    mealLog[todayDateStr] = [];
-                }
-                
-                mealLog[todayDateStr].push(newLogEntry);
-                saveMealLog();
-                
-                showToast(`${food.name} added to log!`);
-                foodSearchInput.value = '';
-                foodSearchResults.innerHTML = '';
-                renderTodaysLog('add-custom'); // Re-render the custom add page
-            }
-            
-            // Remove a food from today's log
             function removeFoodFromLog(index) {
-                const todayDateStr = getTodayDateString();
-                if (mealLog[todayDateStr] && mealLog[todayDateStr][index]) {
-                    const removed = mealLog[todayDateStr].splice(index, 1);
+                const dateStr = selectedLogDate; // Use selected date
+                if (mealLog[dateStr] && mealLog[dateStr][index]) {
+                    const removed = mealLog[dateStr].splice(index, 1);
                     saveMealLog();
                     showToast(`${removed[0].name} removed.`);
-                    renderTodaysLog('add-custom'); // Re-render both
-                    renderTodaysLog('log-routine'); // Re-render both
+                    // Re-render all relevant lists
+                    renderTodaysLog('add-custom'); 
+                    renderTodaysLog('log-routine'); 
+                    renderDailyGoals('dashboard');
+                    // renderDailyGoals('add-custom') is called by renderTodaysLog
                 }
             }
             
-            // Calculate and render totals
-            function calculateAndRenderTotals() {
-                const todayDateStr = getTodayDateString();
-                const todayMeals = mealLog[todayDateStr] || [];
-                
-                const totals = {
-                    calories: 0,
-                    protein: 0,
-                    fat: 0,
-                    carbs: 0,
-                    calcium_mg: 0,
-                    iron_mg: 0
-                };
-                
-                todayMeals.forEach(logEntry => {
-                    const food = FOOD_DATABASE.find(f => f.id === logEntry.dbId);
-                    if (food) {
-                        totals.calories += food.calories;
-                        totals.protein += food.protein;
-                        totals.fat += food.fat;
-                        totals.carbs += food.carbs;
-                        totals.calcium_mg += food.calcium_mg;
-                        totals.iron_mg += food.iron_mg;
-                    }
+            // Renders Daily Goal Progress Bars
+            function renderDailyGoals(context) {
+                let container;
+                // Dashboard *always* shows today. Other pages show selectedLogDate.
+                const dateStr = (context === 'dashboard') ? getTodayDateString() : selectedLogDate;
+
+                if (context === 'dashboard') {
+                    container = dashboardGoalsContainer;
+                } else if (context === 'add-custom') {
+                    container = addCustomGoalsContainer;
+                } else {
+                    return;
+                }
+
+                const totals = getTotalsForDay(dateStr); // Use correct date string
+
+                // Generate HTML for each progress bar
+                let goalsHTML = '';
+                const nutrients = [
+                    { key: 'calories', label: 'Calories', unit: 'kcal' },
+                    { key: 'protein', label: 'Protein', unit: 'g' },
+                    { key: 'fat', label: 'Fat', unit: 'g' },
+                    { key: 'carbs', label: 'Carbs', unit: 'g' },
+                    { key: 'calcium_mg', label: 'Calcium', unit: 'mg' },
+                    { key: 'iron_mg', label: 'Iron', unit: 'mg' }
+                ];
+
+                nutrients.forEach(nutrient => {
+                    const current = totals[nutrient.key];
+                    const goal = DAILY_GOALS[nutrient.key];
+                    const percent = Math.min(100, (current / goal) * 100);
+                    
+                    goalsHTML += `
+                        <div class="progress-item">
+                            <div class="progress-label">
+                                <span>${nutrient.label}</span>
+                                <span>${current.toFixed(0)} / ${goal} ${nutrient.unit}</span>
+                            </div>
+                            <div class="progress-bar-container">
+                                <div class="progress-bar-fill ${nutrient.key === 'calories' ? 'calories' : ''}" style="width: ${percent.toFixed(0)}%;"></div>
+                            </div>
+                        </div>
+                    `;
                 });
+
+                // Update title on 'add-custom' page
+                if (context === 'add-custom') {
+                    if (dateStr === getTodayDateString()) {
+                        addCustomGoalsTitle.textContent = "Today's Goals";
+                    } else {
+                        addCustomGoalsTitle.textContent = `${formatDisplayDate(dateStr)}'s Goals`;
+                    }
+                }
                 
-                // Render the summary
-                nutritionSummary.innerHTML = `
-                    <div class="summary-item">
-                        <p>Total Calories</p>
-                        <span class="summary-value">${totals.calories.toFixed(0)} kcal</span>
-                    </div>
-                    <div class="summary-item">
-                        <p>Total Protein</p>
-                        <span class="summary-value">${totals.protein.toFixed(1)} g</span>
-                    </div>
-                    <div class="summary-item">
-                        <p>Total Fat</p>
-                        <span class="summary-value">${totals.fat.toFixed(1)} g</span>
-                    </div>
-                    <div class="summary-item">
-                        <p>Total Carbs</p>
-                        <span class="summary-value">${totals.carbs.toFixed(1)} g</span>
-                    </div>
-                    <div class="summary-item">
-                        <p>Total Calcium</p>
-                        <span class="summary-value">${totals.calcium_mg.toFixed(0)} mg</span>
-                    </div>
-                    <div class="summary-item">
-                        <p>Total Iron</p>
-                        <span class="summary-value">${totals.iron_mg.toFixed(1)} mg</span>
-                    </div>
-                `;
+                container.innerHTML = goalsHTML;
             }
             
-            // Render the list of food logged today
-            // context: 'add-custom' or 'log-routine'
+            // Renders Today's Log List
             function renderTodaysLog(context) {
-                const todayDateStr = getTodayDateString();
-                const todayMeals = mealLog[todayDateStr] || [];
+                const dateStr = selectedLogDate; // Use selected date
+                const todayMeals = mealLog[dateStr] || []; // Get meals for that date
                 
                 let targetList;
                 if (context === 'add-custom') {
                     targetList = todaysLogList;
-                    // Also calculate totals when on this page
-                    calculateAndRenderTotals(); 
+                    renderDailyGoals('add-custom'); 
+                    // Update log title
+                    if (dateStr === getTodayDateString()) {
+                        addCustomLogTitle.textContent = "Today's Log";
+                    } else {
+                        addCustomLogTitle.textContent = `${formatDisplayDate(dateStr)}'s Log`;
+                    }
                 } else if (context === 'log-routine') {
                     targetList = todaysLogListRoutine;
+                    // Update log title
+                    if (dateStr === getTodayDateString()) {
+                        routineLogTitle.textContent = "Today's Log";
+                    } else {
+                        routineLogTitle.textContent = `${formatDisplayDate(dateStr)}'s Log`;
+                    }
                 } else {
-                    return; // Don't render if context is wrong
+                    return;
                 }
 
                 if (todayMeals.length === 0) {
-                    targetList.innerHTML = `<p style="text-align: center; color: var(--text-light); padding: 16px 0;">No foods logged yet today.</p>`;
+                    targetList.innerHTML = `<p style="text-align: center; color: var(--text-light); padding: 16px 0;">No foods logged for ${formatDisplayDate(dateStr)}.</p>`;
                 } else {
                     targetList.innerHTML = todayMeals.map((logEntry, index) => `
                         <div class="log-item">
                             <div class="log-item-details">
                                 <p>${logEntry.name}</p>
+                                <!-- This now shows the correct quantity! -->
                                 <span>${logEntry.serving}</span>
                             </div>
                             <button class="remove-log-btn" data-index="${index}" title="Remove item">
@@ -1367,25 +1506,64 @@
                     `).join('');
                 }
                 
-                // Only the 'add-custom' page has the summary box
-                if(context === 'add-custom') {
-                    calculateAndRenderTotals();
+                if (context === 'log-routine') {
+                    // Always update dashboard goals for *today*
+                    renderDailyGoals('dashboard');
                 }
             }
 
-            // --- Event Listeners for Add Food ---
+            // --- Event Listeners for Add Food & Modal ---
             foodSearchInput.addEventListener('input', () => {
                 renderSearchResults(foodSearchInput.value);
             });
             
+            // Click on a search result
             foodSearchResults.addEventListener('click', (e) => {
                 const item = e.target.closest('.food-result-item');
                 if (item && item.dataset.id) {
-                    addFoodToLog(parseInt(item.dataset.id));
+                    const foodId = parseInt(item.dataset.id);
+                    foodToAddWithModal = FOOD_DATABASE.find(f => f.id === foodId);
+                    if (foodToAddWithModal) {
+                        // Show the modal
+                        modalTitle.textContent = `Add ${foodToAddWithModal.name}`;
+                        modalLabel.textContent = `Quantity (${foodToAddWithModal.base_unit})`;
+                        modalUnit.textContent = foodToAddWithModal.base_unit;
+                        quantityInput.value = "1";
+                        quantityModal.style.display = 'flex';
+                        quantityInput.focus();
+                    }
+                    foodSearchInput.value = '';
+                    foodSearchResults.innerHTML = '';
+                }
+            });
+
+            // Click "Add" on the modal
+            modalAddBtn.addEventListener('click', () => {
+                const quantity = parseFloat(quantityInput.value);
+                if (foodToAddWithModal && quantity > 0) {
+                    logFoodEntry(foodToAddWithModal, quantity);
+                    quantityModal.style.display = 'none';
+                    foodToAddWithModal = null;
+                } else {
+                    showToast("Please enter a valid quantity.");
+                }
+            });
+
+            // Click "Cancel" on the modal
+            modalCancelBtn.addEventListener('click', () => {
+                quantityModal.style.display = 'none';
+                foodToAddWithModal = null;
+            });
+
+            // Close modal if clicking overlay
+            quantityModal.addEventListener('click', (e) => {
+                if (e.target === quantityModal) {
+                    quantityModal.style.display = 'none';
+                    foodToAddWithModal = null;
                 }
             });
             
-            // Updated to work on both log lists
+            // Event listeners for the "Remove" buttons on log lists
             todaysLogList.addEventListener('click', (e) => {
                 const button = e.target.closest('.remove-log-btn');
                 if (button && button.dataset.index) {
@@ -1399,63 +1577,93 @@
                 }
             });
             
-            // --- 9. NEW: ROUTINE LOGIC ---
+            // --- NEW: Date Picker Logic ---
+            function updateSelectedDate(newDate) {
+                if (newDate) {
+                    selectedLogDate = newDate;
+                    // Sync both pickers
+                    logDatePickerCustom.value = selectedLogDate;
+                    logDatePickerRoutine.value = selectedLogDate;
+                    
+                    // Re-render logs and goals for the selected date
+                    renderTodaysLog('add-custom');
+                    renderTodaysLog('log-routine');
+                    // renderDailyGoals is called inside renderTodaysLog('add-custom')
+                }
+            }
+
+            logDatePickerCustom.addEventListener('change', () => {
+                updateSelectedDate(logDatePickerCustom.value);
+            });
+            
+            logDatePickerRoutine.addEventListener('change', () => {
+                updateSelectedDate(logDatePickerRoutine.value);
+            });
+
+
+            // --- 9. ROUTINE LOGIC (Updated for new template) ---
             routineLogPage.addEventListener('click', (e) => {
                 const baseBtn = e.target.closest('.btn-log-base');
                 const boosterBtn = e.target.closest('.btn-log-booster');
+                const dateStr = selectedLogDate; // Use selected date
+                if (!mealLog[dateStr]) {
+                    mealLog[dateStr] = [];
+                }
 
                 if (baseBtn && baseBtn.dataset.meal) {
                     const mealKey = baseBtn.dataset.meal;
-                    const foodIds = ROUTINE_TEMPLATE[mealKey];
+                    const itemsToLog = ROUTINE_TEMPLATE[mealKey]; // This is an array of {id, qty}
                     
-                    if (foodIds) {
-                        foodIds.forEach(id => {
-                            const food = FOOD_DATABASE.find(f => f.id === id);
+                    if (itemsToLog) {
+                        itemsToLog.forEach(item => {
+                            const food = FOOD_DATABASE.find(f => f.id === item.id);
                             if (food) {
-                                // A "silent" add to log, without toast spam
-                                const newLogEntry = { dbId: food.id, name: food.name, serving: food.serving };
-                                const todayDateStr = getTodayDateString();
-                                if (!mealLog[todayDateStr]) {
-                                    mealLog[todayDateStr] = [];
-                                }
-                                mealLog[todayDateStr].push(newLogEntry);
+                                const newLogEntry = { 
+                                    dbId: food.id, 
+                                    name: food.name, 
+                                    serving: `${item.qty} ${food.base_unit}${item.qty > 1 && food.base_unit !== 'g' && food.base_unit.slice(-1) !== 's' ? 's' : ''}`, 
+                                    qty: item.qty 
+                                };
+                                mealLog[dateStr].push(newLogEntry);
                             }
                         });
                         saveMealLog();
-                        showToast('Routine meal added!');
-                        renderTodaysLog('log-routine'); // Update the list on this page
+                        showToast(`Routine meal added to ${formatDisplayDate(dateStr)}!`);
+                        renderTodaysLog('log-routine'); 
+                        renderDailyGoals('dashboard'); // Update today's dashboard
                     }
                 }
 
                 if (boosterBtn && boosterBtn.dataset.foodId) {
+                    // Boosters will open the modal to ask for quantity
                     const foodId = parseInt(boosterBtn.dataset.foodId);
-                    const food = FOOD_DATABASE.find(f => f.id === foodId);
-                    if (!food) return;
-    
-                    const newLogEntry = { dbId: food.id, name: food.name, serving: food.serving };
-                    const todayDateStr = getTodayDateString();
-                    if (!mealLog[todayDateStr]) {
-                        mealLog[todayDateStr] = [];
+                    foodToAddWithModal = FOOD_DATABASE.find(f => f.id === foodId);
+                    if (foodToAddWithModal) {
+                        modalTitle.textContent = `Add ${foodToAddWithModal.name}`;
+                        modalLabel.textContent = `Quantity (${foodToAddWithModal.base_unit})`;
+                        modalUnit.textContent = foodToAddWithModal.base_unit;
+                        // Special case for Badam booster
+                        if (foodId === 26) { 
+                            quantityInput.value = "5"; // Default to 5 nuts
+                        } else {
+                            quantityInput.value = "1";
+                        }
+                        quantityModal.style.display = 'flex';
+                        quantityInput.focus();
                     }
-                    mealLog[todayDateStr].push(newLogEntry);
-                    saveMealLog();
-                    showToast(`${food.name} (booster) added!`);
-                    renderTodaysLog('log-routine'); // Update the list on this page
                 }
             });
 
-            // --- 10. FOOD LIST PAGE LOGIC ---
+            // --- 10. FOOD LIST PAGE LOGIC (Updated to show base_unit) ---
             function renderFoodDatabase() {
                 foodDatabaseListContainer.innerHTML = '';
-                
-                // Sort database alphabetically by name
                 const sortedDB = [...FOOD_DATABASE].sort((a, b) => a.name.localeCompare(b.name));
                 
                 sortedDB.forEach(food => {
                     const cardHTML = `
                         <div class="food-list-item">
                             <h3>${food.name}</h3>
-                            <p class="serving-info">${food.serving}</p>
+                            <p class="serving-info">Nutrition per 1 ${food.base_unit}</p>
                             <div class="food-list-nutrients">
                                 <span><strong>Calories:</strong> ${food.calories.toFixed(0)} kcal</span>
                                 <span><strong>Protein:</strong> ${food.protein.toFixed(1)} g</span>
@@ -1470,7 +1678,7 @@
                 });
             }
 
-            // --- 11. MEAL IDEAS LOGIC (from previous app) ---
+            // --- 11. MEAL IDEAS LOGIC ---
             function renderDayTabs() {
                 daySelectorContainer.innerHTML = '';
                 MEAL_PLAN_DATA.forEach(dayData => {
@@ -1495,12 +1703,13 @@
                     const mealName = MEAL_TYPE_MAP[key] || 'Meal';
                     const mealIcon = MEAL_ICON_MAP[key] || 'dot';
                     
-                    // NOTE: Removed the "Track" button. This is just for viewing.
                     const cardHTML = `
                         <div class="meal-card">
                             <i class="ph-light ph-${mealIcon} meal-icon"></i>
-                            <h3 class="meal-title">${mealName}</h3>
-                            <p class="meal-description">${description}</p>
+                            <div>
+                                <h3 class="meal-title">${mealName}</h3>
+                                <p class="meal-description">${description}</p>
+                            </div>
                         </div>
                     `;
                     mealListContainer.insertAdjacentHTML('beforeend', cardHTML);
@@ -1511,18 +1720,54 @@
                 const tab = e.target.closest('.day-tab');
                 if (tab && tab.dataset.dayName) {
                     selectedPlanDay = tab.dataset.dayName;
-                    renderDayTabs(); // Re-render tabs to show active state
-                    renderMealIdeas(selectedPlanDay); // Re-render meals
+                    renderDayTabs(); 
+                    renderMealIdeas(selectedPlanDay); 
                 }
             });
 
-            // --- 11. INITIALIZATION ---
+            // --- 12. HISTORY REPORT LOGIC (Updated to use new totals) ---
+            function renderHistoryReport() {
+                historyReportContainer.innerHTML = '';
+                
+                for (let i = 0; i < 7; i++) {
+                    const dateStr = getDateStringDaysAgo(i);
+                    const dayTotals = getTotalsForDay(dateStr); // Use new function
+                    const dayWeight = weightLog.find(w => w.date === dateStr);
+
+                    const cardHTML = `
+                        <div class="history-day-card">
+                            <h3 class="history-day-title">
+                                ${formatDisplayDate(dateStr)}
+                            </h3>
+                            <div class="history-day-stats">
+                                <div class="history-stat">
+                                    <span class="history-stat-label">Calories Logged</span>
+                                    <span class="history-stat-value">${dayTotals.calories.toFixed(0)} kcal</span>
+                                </div>
+                                <div class="history-stat">
+                                    <span class="history-stat-label">Weight Logged</span>
+                                    <span class="history-stat-value">${dayWeight ? dayWeight.weight + ' kg' : '--'}</span>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                    historyReportContainer.insertAdjacentHTML('beforeend', cardHTML);
+                }
+            }
+
+
+            // --- 13. INITIALIZATION ---
             function init() {
-                // Rename 'page-add-food' to 'page-add-custom' to match nav
                 const oldPage = document.getElementById('page-add-food');
                 if (oldPage) {
                     oldPage.id = 'page-add-custom';
                 }
+
+                // Initialize date pickers to today's date
+                selectedLogDate = getTodayDateString();
+                logDatePickerCustom.value = selectedLogDate;
+                logDatePickerRoutine.value = selectedLogDate;
+                weightLogDate.value = getTodayDateString();
 
                 loadData();
                 showPage('dashboard'); // Start on the dashboard
