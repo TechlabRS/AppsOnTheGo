@@ -1,0 +1,2041 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>All-in-One Tracker</title>
+    <!-- Google Font: Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Phosphor Icons -->
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    
+    <style>
+        /* CSS variables for a modern theme */
+        :root {
+            --primary-green: #2d6a4f;
+            --medium-green: #40916c;
+            --light-green: #b7e4c7;
+            --bg-light: #f7fdf9;
+            --white: #ffffff;
+            --grey-light: #f0f0f0;
+            --grey-medium: #d8d8d8;
+            --text-dark: #212529;
+            --text-light: #495057;
+            --shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.08);
+            --border-radius: 12px;
+            --warning-light: #fff3cd;
+            --warning-dark: #856404;
+            --danger-light: #f8d7da;
+            --danger-dark: #721c24;
+        }
+
+        /* General Reset & Body */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-light);
+            color: var(--text-dark);
+            line-height: 1.6;
+            padding: 20px;
+        }
+
+        /* Main App Container */
+        .container {
+            max-width: 500px; /* Compact, mobile-first */
+            margin: 0 auto;
+            background: var(--white);
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow-lg);
+            overflow: hidden;
+        }
+
+        /* Header */
+        header {
+            padding: 24px;
+            background: var(--primary-green);
+            color: var(--white);
+        }
+
+        header h1 {
+            font-size: 1.75rem;
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+
+        header p {
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+
+        /* Main Navigation Tabs */
+        .main-nav {
+            display: flex;
+            background: var(--white);
+            border-bottom: 1px solid var(--grey-light);
+        }
+
+        .nav-tab {
+            flex: 1;
+            padding: 12px 2px; /* Adjusted padding for 6 tabs */
+            text-align: center;
+            cursor: pointer;
+            font-size: 0.7rem; /* Adjusted font size for 6 tabs */
+            font-weight: 600;
+            color: var(--text-light);
+            border-bottom: 3px solid transparent;
+            transition: all 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+        }
+        .nav-tab i {
+            font-size: 1.25rem; /* Icon size */
+        }
+        .nav-tab.active {
+            color: var(--primary-green);
+            border-bottom-color: var(--primary-green);
+        }
+        .nav-tab:hover:not(.active) {
+            background-color: var(--bg-light);
+        }
+
+        /* Page Container */
+        main {
+            padding: 24px;
+        }
+
+        .page {
+            display: none; /* Hidden by default */
+        }
+        .page.active {
+            display: block; /* Shown when active */
+        }
+
+        .page-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--primary-green);
+        }
+
+        /* Card element */
+        .card {
+            background: var(--white);
+            border: 1px solid var(--grey-light);
+            border-radius: var(--border-radius);
+            padding: 20px;
+            box-shadow: var(--shadow);
+            margin-bottom: 20px;
+        }
+        .card h3 {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 16px;
+        }
+
+        /* --- Dashboard Page --- */
+        .progress-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+            gap: 16px;
+            text-align: center;
+        }
+        .stat p {
+            font-size: 0.85rem;
+            color: var(--text-light);
+            margin-bottom: 4px;
+        }
+        .stat-value {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--primary-green);
+        }
+
+        .weight-log-form {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+        .form-input {
+            flex: 1;
+            padding: 12px;
+            border: 1px solid var(--grey-medium);
+            border-radius: 8px;
+            font-size: 1rem;
+            font-family: 'Inter', sans-serif;
+            -moz-appearance: textfield; /* Firefox */
+        }
+        .form-input::-webkit-outer-spin-button,
+        .form-input::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+        
+        .form-button {
+            padding: 12px 16px;
+            border: none;
+            border-radius: 8px;
+            background: var(--medium-green);
+            color: var(--white);
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+        .form-button:hover {
+            background: var(--primary-green);
+        }
+        .motivation-quote {
+            font-style: italic;
+            color: var(--text-light);
+            text-align: center;
+        }
+
+        /* --- Add Food / Log Meal Page --- */
+        .form-group {
+            margin-bottom: 20px;
+        }
+        .form-group label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 8px;
+            font-size: 0.9rem;
+        }
+        .food-search-container {
+            position: relative;
+        }
+        .food-search-results {
+            position: absolute;
+            width: 100%;
+            background: var(--white);
+            border: 1px solid var(--grey-medium);
+            border-radius: 0 0 var(--border-radius) var(--border-radius);
+            box-shadow: var(--shadow);
+            z-index: 10;
+            max-height: 200px;
+            overflow-y: auto;
+            /* Hide border-top when empty */
+            border-top: none;
+        }
+        .food-result-item {
+            padding: 12px 16px;
+            cursor: pointer;
+            border-bottom: 1px solid var(--grey-light);
+        }
+        .food-result-item:last-child {
+            border-bottom: none;
+        }
+        .food-result-item:hover {
+            background-color: var(--bg-light);
+        }
+        .food-result-item p {
+            font-weight: 500;
+        }
+        .food-result-item span {
+            font-size: 0.85rem;
+            color: var(--text-light);
+        }
+
+        /* Logged List */
+        .todays-log-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        .log-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px;
+            background: var(--bg-light);
+            border-radius: 8px;
+        }
+        .log-item-details p {
+            font-weight: 600;
+            font-size: 0.95rem;
+        }
+        .log-item-details span {
+            font-size: 0.8rem;
+            color: var(--text-light);
+        }
+        .remove-log-btn {
+            background: transparent;
+            border: none;
+            color: var(--text-light);
+            font-size: 1.25rem;
+            cursor: pointer;
+            padding: 4px;
+        }
+        .remove-log-btn:hover {
+            color: var(--danger-dark);
+        }
+
+        /* --- Daily Goal Progress Bars --- */
+        .progress-goal-container {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+        .progress-item {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+        .progress-label {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+        .progress-label span:last-child {
+            font-weight: 500;
+            color: var(--text-light);
+        }
+        .progress-bar-container {
+            width: 100%;
+            height: 12px;
+            background: var(--grey-light);
+            border-radius: 6px;
+            overflow: hidden;
+        }
+        .progress-bar-fill {
+            height: 100%;
+            background: var(--medium-green);
+            border-radius: 6px;
+            transition: width 0.5s ease;
+        }
+        /* Color override for calories */
+        .progress-bar-fill.calories {
+            background: var(--primary-green);
+        }
+
+
+        /* --- Meal Ideas Page --- */
+        .day-selector {
+            display: flex;
+            overflow-x: auto;
+            background: var(--bg-light);
+            border-radius: 8px;
+            padding: 6px;
+            margin-bottom: 20px;
+            -webkit-overflow-scrolling: touch; /* Smooth scroll on iOS */
+            /* Hide scrollbar */
+            scrollbar-width: none; /* Firefox */
+            -ms-overflow-style: none; /* IE/Edge */
+        }
+        .day-selector::-webkit-scrollbar {
+            display: none; /* Chrome/Safari/Opera */
+        }
+        .day-tab {
+            flex: 0 0 auto; /* Don't grow, don't shrink, base on content */
+            padding: 10px 16px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--text-light);
+            border-radius: 6px;
+            cursor: pointer;
+            text-align: center;
+            white-space: nowrap;
+        }
+        .day-tab.active {
+            background: var(--medium-green);
+            color: var(--white);
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        .meal-list {
+            display: grid;
+            gap: 16px;
+        }
+        .meal-card {
+            display: flex;
+            align-items: flex-start;
+            gap: 16px;
+            padding: 16px;
+            background: var(--white);
+            border: 1px solid var(--grey-light);
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+        }
+        .meal-icon {
+            font-size: 1.75rem;
+            color: var(--primary-green);
+            margin-top: 4px;
+        }
+        .meal-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+        .meal-description {
+            font-size: 0.9rem;
+            color: var(--text-light);
+            line-height: 1.5;
+        }
+
+        /* --- Toast Message --- */
+        #toast-message {
+            position: fixed;
+            bottom: -100px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: var(--text-dark);
+            color: var(--white);
+            padding: 14px 24px;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            z-index: 1000;
+            transition: bottom 0.5s ease;
+            box-shadow: var(--shadow-lg);
+        }
+        #toast-message.show {
+            bottom: 30px;
+        }
+
+        /* --- Food List Page --- */
+        .food-database-list {
+            display: grid;
+            gap: 12px;
+        }
+
+        .food-list-item {
+            background: var(--white);
+            border: 1px solid var(--grey-light);
+            border-radius: var(--border-radius);
+            padding: 16px;
+            box-shadow: var(--shadow);
+        }
+
+        .food-list-item h3 {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--primary-green);
+            margin-bottom: 8px;
+        }
+
+        .food-list-item .serving-info {
+            font-size: 0.85rem;
+            color: var(--text-light);
+            font-style: italic;
+            margin-bottom: 12px;
+        }
+
+        .food-list-nutrients {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+            font-size: 0.9rem;
+        }
+
+        .food-list-nutrients span {
+            color: var(--text-dark);
+        }
+
+        .food-list-nutrients span strong {
+            font-weight: 600;
+            color: var(--text-light);
+        }
+        
+        /* --- Add Food Form (Single Column) --- */
+        #add-food-form {
+            display: grid;
+            grid-template-columns: 1fr; /* Single column for mobile */
+            gap: 16px;
+            border-top: 1px solid var(--grey-light);
+            padding-top: 20px;
+            margin-top: 20px;
+        }
+        #add-food-form .form-group {
+            margin-bottom: 0;
+        }
+        #add-food-form .form-actions {
+            display: flex;
+            gap: 12px;
+            justify-content: flex-end;
+            margin-top: 10px;
+        }
+        .btn-secondary {
+            padding: 10px 16px;
+            border: 1px solid var(--grey-medium);
+            border-radius: 8px;
+            background: var(--grey-light);
+            color: var(--text-dark);
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+        .btn-secondary:hover {
+            background: var(--grey-medium);
+        }
+        .btn-primary-small {
+            padding: 10px 16px;
+            border: none;
+            border-radius: 8px;
+            background: var(--medium-green);
+            color: var(--white);
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+        .btn-primary-small:hover {
+            background: var(--primary-green);
+        }
+        #show-add-food-form-btn {
+            width: 100%;
+            padding: 12px;
+            font-size: 1rem;
+            margin-bottom: 20px;
+        }
+
+        /* --- Routine Log Page --- */
+        .routine-meal-group {
+            margin-bottom: 24px;
+        }
+        .routine-meal-group h3 {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: var(--primary-green);
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .routine-card {
+            background: var(--white);
+            border: 1px solid var(--grey-light);
+            border-radius: var(--border-radius);
+            padding: 16px;
+            box-shadow: var(--shadow);
+        }
+        .routine-card p {
+            font-size: 0.95rem;
+            color: var(--text-dark);
+            margin-bottom: 16px;
+            line-height: 1.5;
+        }
+        .routine-card p strong {
+            font-weight: 600;
+        }
+        .routine-actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        .btn-log-base, .btn-log-booster {
+            padding: 10px 14px;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .btn-log-base {
+            background-color: var(--medium-green);
+            color: var(--white);
+            flex-grow: 1; /* Takes more space */
+        }
+        .btn-log-base:hover {
+            background-color: var(--primary-green);
+        }
+        .btn-log-booster {
+            background-color: var(--grey-light);
+            color: var(--text-dark);
+            border: 1px solid var(--grey-medium);
+        }
+        .btn-log-booster:hover {
+            background-color: var(--grey-medium);
+        }
+
+        /* --- History Page --- */
+        .history-day-card {
+            background: var(--white);
+            border: 1px solid var(--grey-light);
+            border-radius: var(--border-radius);
+            padding: 16px;
+            box-shadow: var(--shadow);
+            margin-bottom: 16px;
+        }
+        .history-day-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--primary-green);
+            margin-bottom: 12px;
+        }
+        .history-day-title span {
+            font-weight: 500;
+            color: var(--text-light);
+            font-size: 0.9rem;
+            margin-left: 8px;
+        }
+        .history-day-stats {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            font-size: 0.95rem;
+        }
+        .history-stat {
+            display: flex;
+            flex-direction: column;
+        }
+        .history-stat-label {
+            font-size: 0.85rem;
+            color: var(--text-light);
+            margin-bottom: 2px;
+        }
+        .history-stat-value {
+            font-weight: 600;
+            color: var(--text-dark);
+        }
+
+        /* --- Quantity Modal --- */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            padding: 20px;
+        }
+        .modal-content {
+            background: var(--white);
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow-lg);
+            width: 100%;
+            max-width: 400px;
+            padding: 24px;
+        }
+        .modal-content h3 {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: var(--primary-green);
+            margin-bottom: 16px;
+        }
+        .modal-body {
+            margin-bottom: 24px;
+        }
+        .modal-body label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 8px;
+            font-size: 0.9rem;
+        }
+        .modal-input-group {
+            display: flex;
+            gap: 10px;
+        }
+        .modal-input-group .form-input {
+            flex: 1;
+        }
+        .modal-unit-label {
+            display: flex;
+            align-items: center;
+            font-size: 1rem;
+            color: var(--text-light);
+            font-weight: 500;
+        }
+        .modal-actions {
+            display: flex;
+            gap: 12px;
+            justify-content: flex-end;
+        }
+        .modal-btn-cancel, .modal-btn-add {
+            padding: 10px 16px;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .modal-btn-cancel {
+            background: var(--grey-light);
+            color: var(--text-dark);
+            border: 1px solid var(--grey-medium);
+        }
+        .modal-btn-cancel:hover {
+            background: var(--grey-medium);
+        }
+        .modal-btn-add {
+            background: var(--medium-green);
+            color: var(--white);
+        }
+        .modal-btn-add:hover {
+            background: var(--primary-green);
+        }
+
+        /* --- NEW: Import/Export Styles --- */
+        .data-management-actions {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+        .import-label {
+            display: inline-block;
+            padding: 12px 16px;
+            border: none;
+            border-radius: 8px;
+            background: var(--grey-light);
+            color: var(--text-dark);
+            border: 1px solid var(--grey-medium);
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.3s ease;
+            text-align: center;
+        }
+        .import-label:hover {
+            background: var(--grey-medium);
+        }
+        #import-file-input {
+            display: none;
+        }
+
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>My Tracker</h1>
+            <p>Your journey to healthy weight gain</p>
+        </header>
+        
+        <!-- Main Navigation -->
+        <nav class="main-nav">
+            <div class="nav-tab active" data-page="dashboard">
+                <i class="ph-light ph-chart-line"></i>
+                Dashboard
+            </div>
+            <div class="nav-tab" data-page="log-routine">
+                <i class="ph-light ph-plus-circle"></i>
+                Log Routine
+            </div>
+            <div class="nav-tab" data-page="add-custom">
+                <i class="ph-light ph-magnifying-glass"></i>
+                Add Custom
+            </div>
+            <div class="nav-tab" data-page="history">
+                <i class="ph-light ph-chart-bar-horizontal"></i>
+                History
+            </div>
+            <div class="nav-tab" data-page="plan">
+                <i class="ph-light ph-calendar"></i>
+                Meal Ideas
+            </div>
+            <div class="nav-tab" data-page="food-list">
+                <i class="ph-light ph-books"></i>
+                Food List
+            </div>
+        </nav>
+
+        <!-- Page Content -->
+        <main>
+            <!-- Dashboard Page -->
+            <section id="page-dashboard" class="page active">
+                <h2 class="page-title"><i class="ph-light ph-chart-line"></i>Dashboard</h2>
+                
+                <div class="card">
+                    <h3>Your Progress</h3>
+                    <div class="progress-stats">
+                        <div class="stat">
+                            <p>Start</p>
+                            <span class="stat-value" id="stat-start-weight">-- kg</span>
+                        </div>
+                        <div class="stat">
+                            <p>Current</p>
+                            <span class="stat-value" id="stat-current-weight">-- kg</span>
+                        </div>
+                        <div class="stat">
+                            <p>Goal</p>
+                            <span class="stat-value" id="stat-goal-weight">-- kg</span>
+                        </div>
+                        <div class="stat">
+                            <p>Gained</p>
+                            <span class="stat-value" id="stat-total-gained">-- kg</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h3>Today's Goals</h3>
+                    <div id="dashboard-goals-container" class="progress-goal-container">
+                        <!-- Progress bars will be injected here -->
+                    </div>
+                </div>
+
+                <!-- WEIGHT LOG FORM -->
+                <div class="card">
+                    <h3>Log Weight</h3>
+                    <form id="weight-log-form" class="weight-log-form" style="flex-wrap: wrap;">
+                        <input type="number" id="weight-input" class="form-input" placeholder="Enter weight in kg" step="0.1" required style="flex-basis: 100%; margin-bottom: 12px;">
+                        <div class="form-group" style="flex: 1; margin-bottom: 0;">
+                            <label for="weight-log-date" style="font-size: 0.8rem; font-weight: 500;">Date:</label>
+                            <input type="date" id="weight-log-date" class="form-input" style="padding-top: 8px; padding-bottom: 8px;">
+                        </div>
+                        <button type="submit" class="form-button" style="flex-basis: 100px;">Save</button>
+                    </form>
+                </div>
+                
+                <div class="card">
+                    <h3>Motivation</h3>
+                    <p class="motivation-quote" id="motivation-quote">"Consistency is the key to progress."</p>
+                </div>
+
+                <!-- NEW: DATA MANAGEMENT CARD -->
+                <div class="card">
+                    <h3>Data Management</h3>
+                    <div class="data-management-actions">
+                        <button id="export-data-btn" class="form-button">
+                            <i class="ph ph-export" style="font-size: 1.1rem; margin-right: 4px;"></i> Export All Data
+                        </button>
+                        <label for="import-file-input" class="import-label">
+                            <i class="ph ph-import" style="font-size: 1.1rem; margin-right: 4px;"></i> Import & Merge Data
+                        </label>
+                        <input type="file" id="import-file-input" accept="application/json">
+                        <p style="font-size: 0.85rem; color: var(--text-light); text-align: center; margin-top: -8px;">
+                            Importing will safely merge data and not overwrite existing logs.
+                        </p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Log Custom Food Page -->
+            <section id="page-add-custom" class="page">
+                <h2 class="page-title"><i class="ph-light ph-magnifying-glass"></i>Add Custom Food</h2>
+                
+                <div class="form-group">
+                    <label for="log-date-picker-custom">Logging for date:</label>
+                    <input type="date" id="log-date-picker-custom" class="form-input" style="max-width: 200px;">
+                </div>
+
+                <div class="form-group food-search-container">
+                    <label for="food-search-input">Search Food Database</label>
+                    <input type="text" id="food-search-input" class="form-input" placeholder="e.g., Rice, Paneer...">
+                    <div id="food-search-results" class="food-search-results"></div>
+                </div>
+
+                <div class="card" style="padding-top: 10px;">
+                    <h3 id="add-custom-goals-title">Today's Goals</h3>
+                    <div id="add-custom-goals-container" class="progress-goal-container">
+                        <!-- Progress bars will be injected here -->
+                    </div>
+                </div>
+
+                <div class="card" style="padding-top: 10px;">
+                    <h3 id="add-custom-log-title">Today's Log</h3>
+                    <div id="todays-log-list" class="todays-log-list">
+                        <!-- Logged items will appear here -->
+                    </div>
+                </div>
+            </section>
+            
+            <!-- Log Routine Page -->
+            <section id="page-log-routine" class="page">
+                <h2 class="page-title"><i class="ph-light ph-plus-circle"></i>Log Routine Meal</h2>
+                
+                <div class="form-group">
+                    <label for="log-date-picker-routine">Logging for date:</label>
+                    <input type="date" id="log-date-picker-routine" class="form-input" style="max-width: 200px;">
+                </div>
+
+                <p style="margin-bottom: 20px; font-size: 0.9rem; color: var(--text-light);">
+                    Log your daily template meals with one click. Add boosters as needed.
+                </p>
+
+                <!-- Routine Meal Groups... -->
+                <div class="routine-meal-group">
+                    <h3><i class="ph-light ph-coffee"></i>Morning</h3>
+                    <div class="routine-card">
+                        <p><strong>Base:</strong> 1 cup Milk or Coffee</p>
+                        <div class="routine-actions">
+                            <button class="btn-log-base" data-meal="morning_drink"><i class="ph ph-plus"></i>Log Milk</button>
+                            <button class="btn-log-base" data-meal="morning_coffee"><i class="ph ph-plus"></i>Log Coffee</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="routine-meal-group">
+                    <h3><i class="ph-light ph-plant"></i>Breakfast</h3>
+                    <div class="routine-card">
+                        <p><strong>Base:</strong> 3 Idlis + 1 serving Peanut Chutney</p>
+                        <div class="routine-actions">
+                            <button class="btn-log-base" data-meal="breakfast"><i class="ph ph-plus"></i>Log Base Breakfast</button>
+                            <button class="btn-log-booster" data-food-id="9"><i class="ph ph-plus-circle"></i>+ Ghee</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="routine-meal-group">
+                    <h3><i class="ph-light ph-bowl-food"></i>Lunch</h3>
+                    <div class="routine-card">
+                        <p><strong>Base:</strong> 1.5 cups Rice + 1 cup Dal + 1 cup Curd</p>
+                        <div class="routine-actions">
+                            <button class="btn-log-base" data-meal="lunch"><i class="ph ph-plus"></i>Log Base Lunch</button>
+                            <button class="btn-log-booster" data-food-id="9"><i class="ph ph-plus-circle"></i>+ Ghee</button>
+                            <button class="btn-log-booster" data-food-id="26"><i class="ph ph-plus-circle"></i>+ 5 Badam</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="routine-meal-group">
+                    <h3><i class="ph-light ph-cookie"></i>Snack</h3>
+                    <div class="routine-card">
+                        <p><strong>Base:</strong> 1 cup Coffee + 2 Biscuits</p>
+                        <div class="routine-actions">
+                            <button class="btn-log-base" data-meal="snack"><i class="ph ph-plus"></i>Log Base Snack</button>
+                            <button class="btn-log-booster" data-food-id="22"><i class="ph ph-plus-circle"></i>+ Peanut Chikki</button>
+                            <button class="btn-log-booster" data-food-id="23"><i class="ph ph-plus-circle"></i>+ Khoa</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="routine-meal-group">
+                    <h3><i class="ph-light ph-pot"></i>Dinner</h3>
+                    <div class="routine-card">
+                        <p><strong>Base:</strong> 2 Rotis + 1 cup Sambar</p>
+                        <div class="routine-actions">
+                            <button class="btn-log-base" data-meal="dinner"><i class="ph ph-plus"></i>Log Base Dinner</button>
+                            <button class="btn-log-booster" data-food-id="9"><i class="ph ph-plus-circle"></i>+ Ghee (on Roti)</button>
+                            <button class="btn-log-booster" data-food-id="4"><i class="ph ph-plus-circle"></i>+ Paneer</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Logged Foods Quick View -->
+                <div class="card" style="padding-top: 10px;">
+                    <h3 id="routine-log-title">Today's Log</h3>
+                    <div id="todays-log-list-routine" class="todays-log-list">
+                        <!-- Logged items will appear here -->
+                    </div>
+                </div>
+            </section>
+
+            <!-- History Page -->
+            <section id="page-history" class="page">
+                <h2 class="page-title"><i class="ph-light ph-chart-bar-horizontal"></i>7-Day History</h2>
+                <p style="margin-bottom: 20px; font-size: 0.9rem; color: var(--text-light);">
+                    Review your logged calories and weight for the past week.
+                </p>
+                <div id="history-report-container">
+                    <!-- History cards will be injected here -->
+                </div>
+            </section>
+
+            <!-- Meal Ideas Page -->
+            <section id="page-plan" class="page">
+                <h2 class="page-title"><i class="ph-light ph-calendar"></i>Meal Ideas</h2>
+                <p style="margin-bottom: 20px; font-size: 0.9rem; color: var(--text-light);">
+                    Use this 7-day plan as a reference for ideas. Log what you eat using the "Log Meal" tab.
+                </p>
+                <!-- Day selection tabs will be injected here -->
+                <nav id="day-selector" class="day-selector"></nav>
+                <!-- Meal cards for the selected day will be injected here -->
+                <main id="meal-list" class="meal-list"></main>
+            </section>
+
+            <!-- Food List Page -->
+            <section id="page-food-list" class="page">
+                <h2 class="page-title"><i class="ph-light ph-books"></i>My Food Database</h2>
+                
+                <!-- Add Food Section -->
+                <div class="card">
+                    <button id="show-add-food-form-btn" class="form-button">
+                        <i class="ph ph-plus-circle" style="font-size: 1.1rem; margin-right: 4px;"></i> Add New Food
+                    </button>
+                    <form id="add-food-form" style="display: none;">
+                        <div class="form-group">
+                            <label for="new-food-name">Food Name</label>
+                            <input type="text" id="new-food-name" class="form-input" placeholder="e.g., Cooked Puffed Rice" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="new-food-unit">Base Unit</label>
+                            <input type="text" id="new-food-unit" class="form-input" placeholder="e.g., cup, g, piece" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="new-food-calories">Calories</label>
+                            <input type="number" id="new-food-calories" class="form-input" placeholder="kcal" step="0.1" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="new-food-protein">Protein</label>
+                            <input type="number" id="new-food-protein" class="form-input" placeholder="g" step="0.1" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="new-food-fat">Fat</label>
+                            <input type="number" id="new-food-fat" class="form-input" placeholder="g" step="0.1" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="new-food-carbs">Carbs</label>
+                            <input type="number" id="new-food-carbs" class="form-input" placeholder="g" step="0.1" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="new-food-calcium">Calcium</label>
+                            <input type="number" id="new-food-calcium" class="form-input" placeholder="mg" step="0.1" required>
+                        </div>
+                         <div class="form-group">
+                            <label for="new-food-iron">Iron</label>
+                            <input type="number" id="new-food-iron" class="form-input" placeholder="mg" step="0.1" required>
+                        </div>
+
+                        <div class="form-actions">
+                            <button type="button" id="cancel-add-food-btn" class="btn-secondary">Cancel</button>
+                            <button type="submit" class="btn-primary-small">Save Food</button>
+                        </div>
+                    </form>
+                </div>
+                
+                <p style="margin-bottom: 20px; font-size: 0.9rem; color: var(--text-light);">
+                    Here is a list of all foods available in your database for logging.
+                </p>
+                <div id="food-database-list" class="food-database-list">
+                    <!-- Food items will be injected here -->
+                </div>
+            </section>
+
+        </main>
+    </div>
+    
+    <!-- Toast Message -->
+    <div id="toast-message"></div>
+
+    <!-- Quantity Modal -->
+    <div id="quantity-modal" class="modal-overlay" style="display: none;">
+        <div class="modal-content">
+            <h3 id="modal-title">Enter Quantity</h3>
+            <div class="modal-body">
+                <label id="modal-label" for="quantity-input">Quantity</label>
+                <div class="modal-input-group">
+                    <input type="number" id="quantity-input" class="form-input" value="1" step="0.1" min="0.1">
+                    <span id="modal-unit" class="modal-unit-label"></span>
+                </div>
+            </div>
+            <div class="modal-actions">
+                <button id="modal-cancel-btn" class="modal-btn-cancel">Cancel</button>
+                <button id="modal-add-btn" class="modal-btn-add">Add</button>
+            </div>
+        </div>
+    </div>
+
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+
+            // --- 1. DATA (MEAL IDEAS) ---
+            const MEAL_PLAN_DATA = [
+                // ... (Meal plan data is unchanged) ...
+                {
+                    "day": "Monday",
+                    "meals": {
+                        "breakfast": "2-3 Idlis with chutney. 1 glass milk.",
+                        "mid_morning_snack": "1 Ripe Banana.",
+                        "lunch": "1.5 cup Rice + 1 cup Moong Dal (with ghee) + 1 cup Potato curry. Side of curd.",
+                        "evening_snack": "1 glass Sweet Lassi or Milkshake.",
+                        "dinner": "2 Rotis + 1 cup Paneer Bhurji + 1 cup vegetable soup."
+                    }
+                },
+                {
+                    "day": "Tuesday",
+                    "meals": {
+                        "breakfast": "1 bowl Oats Porridge (cooked with milk, topped with banana & 1 tsp honey).",
+                        "mid_morning_snack": "Handful of raisins & 2-3 dates.",
+                        "lunch": "1.5 cups Veg Khichdi (with extra ghee) + 1 bowl Curd.",
+                        "evening_snack": "1 slice Toast with 1 tbsp Peanut Butter.",
+                        "dinner": "2 Rotis + 1 cup Tofu Curry + 1 cup cooked carrot/pumpkin."
+                    }
+                },
+                {
+                    "day": "Wednesday",
+                    "meals": {
+                        "breakfast": "1 bowl Poha (with potatoes & peas).",
+                        "mid_morning_snack": "1 glass Mango/Chikoo Shake.",
+                        "lunch": "1.5 cup Rice + 1 cup Masoor Dal + 1 cup Bhindi (Okra).",
+                        "evening_snack": "1/2 Avocado (mashed) with salt/lime.",
+                        "dinner": "2-3 soft Dosas + 1 cup Sambar (with vegetables)."
+                    }
+                },
+                {
+                    "day": "Thursday",
+                    "meals": {
+                        "breakfast": "1 bowl Upma (with vegetables). 1 glass milk.",
+                        "mid_morning_snack": "1 Ripe Banana.",
+                        "lunch": "2 Rotis + 1 cup Lauki (Bottle Gourd) Kofta Curry + 1 bowl Curd.",
+                        "evening_snack": "1 glass Sattu drink (sweet or savory).",
+                        "dinner": "1 cup Rice + 1 cup well-cooked Rajma (mashed slightly) + side salad (cucumber)."
+                    }
+                },
+                {
+                    "day": "Friday",
+                    "meals": {
+                        "breakfast": "2 slices Toast with Peanut Butter & Banana.",
+                        "mid_morning_snack": "1 glass Sweet Lassi.",
+                        "lunch": "1.5 cups Curd Rice + side of pickle/papad.",
+                        "evening_snack": "1 bowl Fruit Chaat (banana, papaya, mango).",
+                        "dinner": "2 Rotis + 1 cup Potato-Spinach curry + 1 bowl Dal soup."
+                    }
+                },
+                {
+                    "day": "Saturday",
+                    "meals": {
+                        "breakfast": "2-3 Paneer/Aloo Parathas (with ghee) + Curd.",
+                        "mid_morning_snack": "1 glass Milkshake with dates.",
+                        "lunch": "1.5 cup Rice + 1 cup Sambar + 1 cup Mixed Veg (cooked soft).",
+                        "evening_snack": "1 bowl Sweet Potato (boiled, with jaggery).",
+                        "dinner": "1.5 cups Veg Pulao (with tofu/paneer) + 1 bowl Raita."
+                    }
+                },
+                {
+                    "day": "Sunday",
+                    "meals": {
+                        "breakfast": "1 bowl Vermicelli Upma (Semiya).",
+                        "mid_morning_snack": "1 Ripe Banana.",
+                        "lunch": "Repeat any lunch you enjoyed.",
+                        "evening_snack": "1 slice Toast with Avocado.",
+                        "dinner": "2 Rotis + 1 cup Mixed Veg Korma (creamy) + 1 cup Dal."
+                    }
+                }
+            ];
+            
+            // --- UPDATED: FOOD DATABASE LOGIC ---
+            const DEFAULT_FOOD_DATABASE = [
+                { id: 1, name: 'Rice, White (cooked)', base_unit: 'cup', calories: 204, protein: 4.2, fat: 0.4, carbs: 44.2, calcium_mg: 15.8, iron_mg: 0.2 },
+                { id: 2, name: 'Moong Dal (cooked)', base_unit: 'cup', calories: 212, protein: 14.2, fat: 0.8, carbs: 38.7, calcium_mg: 55, iron_mg: 2.7 },
+                { id: 3, name: 'Roti / Chapati', base_unit: 'piece', calories: 170, protein: 5.8, fat: 4.9, carbs: 25.8, calcium_mg: 22, iron_mg: 1.5 },
+                { id: 4, name: 'Paneer', base_unit: 'g', calories: 2.96, protein: 0.18, fat: 0.23, carbs: 0.05, calcium_mg: 4.8, iron_mg: 0.01 }, // Per 1g
+                { id: 5, name: 'Tofu, Soft', base_unit: 'g', calories: 0.61, protein: 0.07, fat: 0.04, carbs: 0.03, calcium_mg: 1.1, iron_mg: 0.01 }, // Per 1g
+                { id: 6, name: 'Potato (cooked)', base_unit: 'cup', calories: 134, protein: 3, fat: 0.1, carbs: 31.1, calcium_mg: 11, iron_mg: 0.5 },
+                { id: 7, name: 'Banana, Ripe', base_unit: 'fruit', calories: 105, protein: 1.3, fat: 0.4, carbs: 27, calcium_mg: 5.9, iron_mg: 0.3 },
+                { id: 8, name: 'Milk, Full Fat (3.5%)', base_unit: 'cup', calories: 149, protein: 7.7, fat: 8, carbs: 11.7, calcium_mg: 276, iron_mg: 0.1 },
+                { id: 9, name: 'Ghee', base_unit: 'tbsp', calories: 123, protein: 0, fat: 14, carbs: 0, calcium_mg: 0, iron_mg: 0 },
+                { id: 10, name: 'Peanut Butter', base_unit: 'tbsp', calories: 94, protein: 4, fat: 8, carbs: 3.5, calcium_mg: 6.5, iron_mg: 0.3 }, // Per 1 tbsp
+                { id: 11, name: 'Yogurt / Curd (Full Fat)', base_unit: 'cup', calories: 149, protein: 8.5, fat: 8, carbs: 11.4, calcium_mg: 296, iron_mg: 0.1 },
+                { id: 12, name: 'Oats (cooked)', base_unit: 'cup', calories: 143, protein: 6, fat: 2.5, carbs: 25.3, calcium_mg: 19, iron_mg: 1.7 },
+                { id: 13, name: 'Avocado', base_unit: 'g', calories: 1.6, protein: 0.02, fat: 0.15, carbs: 0.09, calcium_mg: 0.12, iron_mg: 0.006 }, // Per 1g
+                { id: 14, name: 'Apple', base_unit: 'fruit', calories: 95, protein: 0.5, fat: 0.3, carbs: 25.1, calcium_mg: 10.9, iron_mg: 0.2 },
+                { id: 15, name: 'Grapes, Black', base_unit: 'cup', calories: 104, protein: 1.1, fat: 0.2, carbs: 27.3, calcium_mg: 15.1, iron_mg: 0.5 },
+                { id: 16, name: 'Pineapple', base_unit: 'cup', calories: 83, protein: 0.9, fat: 0.2, carbs: 21.6, calcium_mg: 21.5, iron_mg: 0.5 },
+                { id: 17, name: 'Toor Dal (cooked)', base_unit: 'cup', calories: 205, protein: 12.9, fat: 0.9, carbs: 36.5, calcium_mg: 39.6, iron_mg: 2.2 },
+                { id: 18, name: 'Idli', base_unit: 'piece', calories: 58, protein: 1.9, fat: 0.2, carbs: 12.1, calcium_mg: 6.2, iron_mg: 0.3 },
+                { id: 19, name: 'Dosa, Plain', base_unit: 'piece', calories: 168, protein: 3.9, fat: 6.8, carbs: 29, calcium_mg: 9.4, iron_mg: 0.9 },
+                { id: 20, name: 'Peanut Chutney', base_unit: 'serving (2tbsp)', calories: 90, protein: 3.5, fat: 7.5, carbs: 4, calcium_mg: 10, iron_mg: 0.4 },
+                { id: 21, name: 'Bread, White', base_unit: 'slice', calories: 80, protein: 2.7, fat: 1, carbs: 14.8, calcium_mg: 30, iron_mg: 0.9 },
+                { id: 22, name: 'Peanut Chikki', base_unit: 'piece', calories: 73, protein: 2, fat: 4.5, carbs: 6.8, calcium_mg: 10, iron_mg: 0.3 },
+                { id: 23, name: 'Khoa / Mawa', base_unit: 'g', calories: 3.6, protein: 0.17, fat: 0.26, carbs: 0.14, calcium_mg: 4.3, iron_mg: 0.003 }, // Per 1g
+                { id: 24, name: 'Upma, Rava', base_unit: 'cup', calories: 250, protein: 5.5, fat: 8.5, carbs: 38.1, calcium_mg: 18, iron_mg: 1.1 },
+                { id: 25, name: 'Puffed Rice (Dry, Murmura)', base_unit: 'cup', calories: 56, protein: 1, fat: 0.1, carbs: 12.6, calcium_mg: 0.8, iron_mg: 4.4 }, // Renamed
+                { id: 26, name: 'Almonds (Badam)', base_unit: 'nut', calories: 7, protein: 0.26, fat: 0.6, carbs: 0.26, calcium_mg: 3.3, iron_mg: 0.04 }, // Per 1 nut
+                { id: 27, name: 'Cashews (Kaju)', base_unit: 'nut', calories: 6.1, protein: 0.2, fat: 0.51, carbs: 0.36, calcium_mg: 0.4, iron_mg: 0.07 }, // Per 1 nut
+                { id: 28, name: 'Raisins (Kishmish)', base_unit: 'tbsp', calories: 30, protein: 0.3, fat: 0.05, carbs: 7.95, calcium_mg: 5, iron_mg: 0.2 }, // Per 1 tbsp
+                { id: 29, name: 'Marie Biscuit', base_unit: 'biscuit', calories: 22.5, protein: 0.35, fat: 0.6, carbs: 3.9, calcium_mg: 3, iron_mg: 0.1 }, // Per 1 biscuit
+                { id: 30, name: 'Ven Pongal', base_unit: 'cup', calories: 339, protein: 9.8, fat: 12.8, carbs: 46.5, calcium_mg: 37, iron_mg: 1.9 },
+                { id: 31, name: 'Cucumber (Keera)', base_unit: 'cup', calories: 16, protein: 0.7, fat: 0.1, carbs: 3.8, calcium_mg: 16.6, iron_mg: 0.3 },
+                { id: 32, name: 'Beetroot (cooked)', base_unit: 'cup', calories: 75, protein: 2.9, fat: 0.3, carbs: 17.6, calcium_mg: 27.2, iron_mg: 1.4 },
+                { id: 33, name: 'Carrot (raw)', base_unit: 'medium', calories: 25, protein: 0.6, fat: 0.1, carbs: 5.8, calcium_mg: 20.1, iron_mg: 0.2 },
+                { id: 34, name: 'Sambar', base_unit: 'cup', calories: 115, protein: 5, fat: 3.5, carbs: 18.2, calcium_mg: 40, iron_mg: 1.1 },
+                { id: 35, name: 'Coffee (with milk, sugar)', base_unit: 'cup', calories: 60, protein: 3, fat: 3, carbs: 6, calcium_mg: 110, iron_mg: 0.1 },
+                { id: 36, name: 'Good Day Biscuit', base_unit: 'biscuit', calories: 50, protein: 0.6, fat: 2.3, carbs: 6.8, calcium_mg: 5, iron_mg: 0.2 }
+            ];
+
+            // --- DAILY NUTRITION GOALS ---
+            const DAILY_GOALS = {
+                calories: 2200,
+                protein: 75,
+                fat: 70,
+                carbs: 315,
+                calcium_mg: 1000,
+                iron_mg: 18
+            };
+
+            // --- ROUTINE TEMPLATE ---
+            const ROUTINE_TEMPLATE = {
+                'morning_drink': [ {id: 8, qty: 1} ],
+                'morning_coffee': [ {id: 35, qty: 1} ],
+                'breakfast': [ {id: 18, qty: 3}, {id: 20, qty: 1} ],
+                'lunch': [ {id: 1, qty: 1.5}, {id: 2, qty: 1}, {id: 11, qty: 1} ],
+                'snack': [ {id: 35, qty: 1}, {id: 36, qty: 2} ],
+                'dinner': [ {id: 3, qty: 2}, {id: 34, qty: 1} ]
+            };
+
+            const MEAL_TYPE_MAP = { 'breakfast': 'Breakfast', 'mid_morning_snack': 'Morning Snack', 'lunch': 'Lunch', 'evening_snack': 'Evening Snack', 'dinner': 'Dinner' };
+            const MEAL_ICON_MAP = { 'breakfast': 'coffee', 'mid_morning_snack': 'apple-logo', 'lunch': 'bowl-food', 'evening_snack': 'cookie', 'dinner': 'pot' };
+            const DAY_NAMES = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+            const MOTIVATIONAL_QUOTES = [
+                "Consistency is the key to progress.",
+                "One good meal at a time.",
+                "Trust the process. Good things take time.",
+                "Nourish to flourish.",
+                "You are capable of amazing things.",
+                "A little progress each day adds up to big results.",
+                "Be patient with your body."
+            ];
+
+            // --- 2. DOM ELEMENTS ---
+            const mainNav = document.querySelector('.main-nav');
+            const pages = document.querySelectorAll('.page');
+            const toastMessage = document.getElementById('toast-message');
+
+            // Dashboard
+            const statStartWeight = document.getElementById('stat-start-weight');
+            const statCurrentWeight = document.getElementById('stat-current-weight');
+            const statGoalWeight = document.getElementById('stat-goal-weight');
+            const statTotalGained = document.getElementById('stat-total-gained');
+            const weightLogForm = document.getElementById('weight-log-form');
+            const weightInput = document.getElementById('weight-input');
+            const weightLogDate = document.getElementById('weight-log-date'); 
+            const motivationQuote = document.getElementById('motivation-quote');
+            const dashboardGoalsContainer = document.getElementById('dashboard-goals-container');
+
+            // Add Custom
+            const foodSearchInput = document.getElementById('food-search-input');
+            const foodSearchResults = document.getElementById('food-search-results');
+            const todaysLogList = document.getElementById('todays-log-list');
+            const addCustomGoalsContainer = document.getElementById('add-custom-goals-container');
+            const foodDatabaseListContainer = document.getElementById('food-database-list');
+
+            // Routine Log Page
+            const routineLogPage = document.getElementById('page-log-routine');
+            const todaysLogListRoutine = document.getElementById('todays-log-list-routine');
+
+            // Date Pickers and Log Titles
+            const logDatePickerCustom = document.getElementById('log-date-picker-custom');
+            const logDatePickerRoutine = document.getElementById('log-date-picker-routine');
+            const addCustomGoalsTitle = document.getElementById('add-custom-goals-title');
+            const addCustomLogTitle = document.getElementById('add-custom-log-title');
+            const routineLogTitle = document.getElementById('routine-log-title');
+
+            // History Page
+            const historyReportContainer = document.getElementById('history-report-container');
+            
+            // Meal Ideas
+            const daySelectorContainer = document.getElementById('day-selector');
+            const mealListContainer = document.getElementById('meal-list');
+
+            // Modal
+            const quantityModal = document.getElementById('quantity-modal');
+            const modalTitle = document.getElementById('modal-title');
+            const modalLabel = document.getElementById('modal-label');
+            const quantityInput = document.getElementById('quantity-input');
+            const modalUnit = document.getElementById('modal-unit');
+            const modalCancelBtn = document.getElementById('modal-cancel-btn');
+            const modalAddBtn = document.getElementById('modal-add-btn');
+
+            // Add Food Form Elements
+            const showAddFoodFormBtn = document.getElementById('show-add-food-form-btn');
+            const addFoodForm = document.getElementById('add-food-form');
+            const cancelAddFoodBtn = document.getElementById('cancel-add-food-btn');
+
+            // NEW: Import/Export Elements
+            const exportDataBtn = document.getElementById('export-data-btn');
+            const importFileInput = document.getElementById('import-file-input');
+
+            // --- 3. STATE ---
+            let FOOD_DATABASE = []; // Will be populated from localStorage or DEFAULT
+            let selectedPlanDay = getCurrentDayName();
+            let userProfile = {};
+            let weightLog = [];
+            let mealLog = {};
+            let foodToAddWithModal = null; // Store food object when modal is open
+            let selectedLogDate = getTodayDateString(); // State for selected log date
+
+            // --- 4. HELPER FUNCTIONS ---
+            function getTodayDateString() {
+                const today = new Date();
+                return today.toISOString().split('T')[0];
+            }
+
+            function getDateStringDaysAgo(days) {
+                const date = new Date();
+                date.setDate(date.getDate() - days);
+                return date.toISOString().split('T')[0];
+            }
+            
+            function formatDisplayDate(dateStr) {
+                const date = new Date(dateStr);
+                const options = { weekday: 'long', month: 'short', day: 'numeric' };
+                date.setMinutes(date.getMinutes() + date.getTimezoneOffset());
+                if (dateStr === getTodayDateString()) return "Today";
+                if (dateStr === getDateStringDaysAgo(1)) return "Yesterday";
+                return date.toLocaleDateString('en-US', options);
+            }
+
+            function getCurrentDayName() {
+                return DAY_NAMES[new Date().getDay()];
+            }
+
+            function showToast(message) {
+                toastMessage.textContent = message;
+                toastMessage.classList.add('show');
+                setTimeout(() => {
+                    toastMessage.classList.remove('show');
+                }, 3000);
+            }
+            
+            // --- 5. LOCALSTORAGE FUNCTIONS ---
+            function loadData() {
+                userProfile = JSON.parse(localStorage.getItem('userProfile')) || {
+                    startWeight: 39,
+                    goalPerMonth: 1,
+                    startDate: getTodayDateString()
+                };
+                
+                weightLog = JSON.parse(localStorage.getItem('weightLog')) || [];
+                weightLog.sort((a, b) => new Date(a.date) - new Date(b.date));
+                
+                mealLog = JSON.parse(localStorage.getItem('mealLog')) || {};
+                
+                if (weightLog.length === 0) {
+                     userProfile.startWeight = 39;
+                     localStorage.setItem('userProfile', JSON.stringify(userProfile));
+                }
+
+                // Load food database
+                const storedFoods = JSON.parse(localStorage.getItem('foodDatabase'));
+                if (storedFoods) {
+                    FOOD_DATABASE = storedFoods;
+                } else {
+                    FOOD_DATABASE = [...DEFAULT_FOOD_DATABASE];
+                    localStorage.setItem('foodDatabase', JSON.stringify(FOOD_DATABASE));
+                }
+            }
+
+            function saveWeightLog() {
+                localStorage.setItem('weightLog', JSON.stringify(weightLog));
+            }
+            
+            function saveMealLog() {
+                localStorage.setItem('mealLog', JSON.stringify(mealLog));
+            }
+
+            function saveFoodDatabase() {
+                localStorage.setItem('foodDatabase', JSON.stringify(FOOD_DATABASE));
+            }
+
+            // --- 6. PAGE NAVIGATION ---
+            function showPage(pageId) {
+                pages.forEach(page => page.classList.remove('active'));
+                mainNav.querySelectorAll('.nav-tab').forEach(tab => tab.classList.remove('active'));
+                
+                const targetPage = document.getElementById(`page-${pageId}`);
+                if (targetPage) targetPage.classList.add('active');
+                
+                const targetTab = mainNav.querySelector(`.nav-tab[data-page="${pageId}"]`);
+                if (targetTab) targetTab.classList.add('active');
+                
+                // Load content for the page
+                if (pageId === 'dashboard') {
+                    renderDashboard();
+                    weightLogDate.value = getTodayDateString();
+                } else if (pageId === 'add-custom') {
+                    logDatePickerCustom.value = selectedLogDate;
+                    renderTodaysLog('add-custom');
+                    foodSearchInput.focus();
+                } else if (pageId === 'log-routine') {
+                    logDatePickerRoutine.value = selectedLogDate;
+                    renderTodaysLog('log-routine');
+                } else if (pageId === 'history') {
+                    renderHistoryReport();
+                } else if (pageId === 'plan') {
+                    renderDayTabs();
+                    renderMealIdeas(selectedPlanDay);
+                } else if (pageId === 'food-list') {
+                    renderFoodDatabase();
+                    addFoodForm.style.display = 'none';
+                    showAddFoodFormBtn.style.display = 'block';
+                }
+            }
+            
+            mainNav.addEventListener('click', (e) => {
+                const navTab = e.target.closest('.nav-tab');
+                if (navTab && navTab.dataset.page) {
+                    showPage(navTab.dataset.page);
+                }
+            });
+
+            // --- 7. DASHBOARD LOGIC ---
+            function renderDashboard() {
+                loadData(); 
+                
+                const startWeight = userProfile.startWeight;
+                let currentWeight = startWeight;
+                
+                if (weightLog.length > 0) {
+                    currentWeight = weightLog[weightLog.length - 1].weight;
+                }
+                
+                const totalGained = (currentWeight - startWeight).toFixed(1);
+                
+                const startDate = new Date(userProfile.startDate);
+                const today = new Date();
+                const monthsPassed = (today.getFullYear() - startDate.getFullYear()) * 12 + (today.getMonth() - startDate.getMonth());
+                const goalWeight = startWeight + (userProfile.goalPerMonth * (monthsPassed + 1)); 
+
+                statStartWeight.textContent = `${startWeight} kg`;
+                statCurrentWeight.textContent = `${currentWeight} kg`;
+                statTotalGained.textContent = `${totalGained} kg`;
+                statGoalWeight.textContent = `${goalWeight.toFixed(1)} kg`;
+                
+                motivationQuote.textContent = MOTIVATIONAL_QUOTES[new Date().getDate() % MOTIVATIONAL_QUOTES.length];
+
+                renderDailyGoals('dashboard');
+            }
+            
+            weightLogForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                const weight = parseFloat(weightInput.value);
+                if (weight > 30 && weight < 100) { 
+                    const logDate = weightLogDate.value || getTodayDateString();
+                    const newLogEntry = {
+                        date: logDate,
+                        weight: weight
+                    };
+                    
+                    const entryIndex = weightLog.findIndex(entry => entry.date === newLogEntry.date);
+                    if (entryIndex > -1) {
+                        weightLog[entryIndex] = newLogEntry;
+                    } else {
+                        weightLog.push(newLogEntry);
+                    }
+                    
+                    weightLog.sort((a, b) => new Date(a.date) - new Date(b.date));
+                    
+                    saveWeightLog();
+                    showToast(`Weight for ${formatDisplayDate(logDate)} logged!`);
+                    weightInput.value = '';
+                    renderDashboard();
+                } else {
+                    showToast('Please enter a valid weight.');
+                }
+            });
+
+            // --- 8. LOG MEAL LOGIC ---
+            
+            function getTotalsForDay(dateStr) {
+                const dayMeals = mealLog[dateStr] || [];
+                const totals = {
+                    calories: 0, protein: 0, fat: 0, carbs: 0, calcium_mg: 0, iron_mg: 0
+                };
+
+                dayMeals.forEach(logEntry => {
+                    const food = FOOD_DATABASE.find(f => f.id === logEntry.dbId);
+                    const quantity = logEntry.qty;
+                    if (food && quantity) {
+                        totals.calories += (food.calories * quantity);
+                        totals.protein += (food.protein * quantity);
+                        totals.fat += (food.fat * quantity);
+                        totals.carbs += (food.carbs * quantity);
+                        totals.calcium_mg += (food.calcium_mg * quantity);
+                        totals.iron_mg += (food.iron_mg * quantity);
+                    }
+                });
+                return totals;
+            }
+
+            function logFoodEntry(food, quantity) {
+                if (!food || !quantity || quantity <= 0) {
+                    showToast("Invalid quantity.");
+                    return;
+                }
+
+                const newLogEntry = {
+                    dbId: food.id,
+                    name: food.name,
+                    serving: `${quantity} ${food.base_unit}${quantity > 1 && food.base_unit !== 'g' && food.base_unit.slice(-1) !== 's' ? 's' : ''}`,
+                    qty: quantity
+                };
+                
+                const dateStr = selectedLogDate;
+                if (!mealLog[dateStr]) {
+                    mealLog[dateStr] = [];
+                }
+                
+                mealLog[dateStr].push(newLogEntry);
+                saveMealLog();
+                
+                showToast(`${newLogEntry.name} added to ${formatDisplayDate(dateStr)}!`);
+                foodSearchInput.value = '';
+                foodSearchResults.innerHTML = '';
+                
+                renderTodaysLog('add-custom');
+                renderDailyGoals('dashboard');
+            }
+
+
+            function renderSearchResults(query) {
+                if (!query) {
+                    foodSearchResults.innerHTML = '';
+                    return;
+                }
+                const lowerQuery = query.toLowerCase();
+                const results = FOOD_DATABASE.filter(food => 
+                    food.name.toLowerCase().includes(lowerQuery)
+                );
+                
+                foodSearchResults.innerHTML = results.map(food => `
+                    <div class="food-result-item" data-id="${food.id}">
+                        <p>${food.name}</p>
+                        <span>per ${food.base_unit} &bull; ${food.calories.toFixed(0)} kcal</span>
+                    </div>
+                `).join('');
+            }
+            
+            function removeFoodFromLog(index) {
+                const dateStr = selectedLogDate;
+                if (mealLog[dateStr] && mealLog[dateStr][index]) {
+                    const removed = mealLog[dateStr].splice(index, 1);
+                    saveMealLog();
+                    showToast(`${removed[0].name} removed.`);
+                    renderTodaysLog('add-custom'); 
+                    renderTodaysLog('log-routine'); 
+                    renderDailyGoals('dashboard');
+                }
+            }
+            
+            function renderDailyGoals(context) {
+                let container;
+                const dateStr = (context === 'dashboard') ? getTodayDateString() : selectedLogDate;
+
+                if (context === 'dashboard') {
+                    container = dashboardGoalsContainer;
+                } else if (context === 'add-custom') {
+                    container = addCustomGoalsContainer;
+                } else {
+                    return;
+                }
+
+                const totals = getTotalsForDay(dateStr);
+
+                let goalsHTML = '';
+                const nutrients = [
+                    { key: 'calories', label: 'Calories', unit: 'kcal' },
+                    { key: 'protein', label: 'Protein', unit: 'g' },
+                    { key: 'fat', label: 'Fat', unit: 'g' },
+                    { key: 'carbs', label: 'Carbs', unit: 'g' },
+                    { key: 'calcium_mg', label: 'Calcium', unit: 'mg' },
+                    { key: 'iron_mg', label: 'Iron', unit: 'mg' }
+                ];
+
+                nutrients.forEach(nutrient => {
+                    const current = totals[nutrient.key];
+                    const goal = DAILY_GOALS[nutrient.key];
+                    const percent = Math.min(100, (current / goal) * 100);
+                    
+                    goalsHTML += `
+                        <div class="progress-item">
+                            <div class="progress-label">
+                                <span>${nutrient.label}</span>
+                                <span>${current.toFixed(0)} / ${goal} ${nutrient.unit}</span>
+                            </div>
+                            <div class="progress-bar-container">
+                                <div class="progress-bar-fill ${nutrient.key === 'calories' ? 'calories' : ''}" style="width: ${percent.toFixed(0)}%;"></div>
+                            </div>
+                        </div>
+                    `;
+                });
+
+                if (context === 'add-custom') {
+                    if (dateStr === getTodayDateString()) {
+                        addCustomGoalsTitle.textContent = "Today's Goals";
+                    } else {
+                        addCustomGoalsTitle.textContent = `${formatDisplayDate(dateStr)}'s Goals`;
+                    }
+                }
+                
+                container.innerHTML = goalsHTML;
+            }
+            
+            function renderTodaysLog(context) {
+                const dateStr = selectedLogDate;
+                const todayMeals = mealLog[dateStr] || [];
+                
+                let targetList;
+                if (context === 'add-custom') {
+                    targetList = todaysLogList;
+                    renderDailyGoals('add-custom'); 
+                    if (dateStr === getTodayDateString()) {
+                        addCustomLogTitle.textContent = "Today's Log";
+                    } else {
+                        addCustomLogTitle.textContent = `${formatDisplayDate(dateStr)}'s Log`;
+                    }
+                } else if (context === 'log-routine') {
+                    targetList = todaysLogListRoutine;
+                    if (dateStr === getTodayDateString()) {
+                        routineLogTitle.textContent = "Today's Log";
+                    } else {
+                        routineLogTitle.textContent = `${formatDisplayDate(dateStr)}'s Log`;
+                    }
+                } else {
+                    return;
+                }
+
+                if (todayMeals.length === 0) {
+                    targetList.innerHTML = `<p style="text-align: center; color: var(--text-light); padding: 16px 0;">No foods logged for ${formatDisplayDate(dateStr)}.</p>`;
+                } else {
+                    targetList.innerHTML = todayMeals.map((logEntry, index) => `
+                        <div class="log-item">
+                            <div class="log-item-details">
+                                <p>${logEntry.name}</p>
+                                <span>${logEntry.serving}</span>
+                            </div>
+                            <button class="remove-log-btn" data-index="${index}" title="Remove item">
+                                <i class="ph ph-trash"></i>
+                            </button>
+                        </div>
+                    `).join('');
+                }
+                
+                if (context === 'log-routine') {
+                    renderDailyGoals('dashboard');
+                }
+            }
+
+            // --- Event Listeners for Add Food & Modal ---
+            foodSearchInput.addEventListener('input', () => {
+                renderSearchResults(foodSearchInput.value);
+            });
+            
+            foodSearchResults.addEventListener('click', (e) => {
+                const item = e.target.closest('.food-result-item');
+                if (item && item.dataset.id) {
+                    const foodId = parseInt(item.dataset.id);
+                    foodToAddWithModal = FOOD_DATABASE.find(f => f.id === foodId);
+                    if (foodToAddWithModal) {
+                        modalTitle.textContent = `Add ${foodToAddWithModal.name}`;
+                        modalLabel.textContent = `Quantity (${foodToAddWithModal.base_unit})`;
+                        modalUnit.textContent = foodToAddWithModal.base_unit;
+                        quantityInput.value = "1";
+                        quantityModal.style.display = 'flex';
+                        quantityInput.focus();
+                    }
+                    foodSearchInput.value = '';
+                    foodSearchResults.innerHTML = '';
+                }
+            });
+
+            modalAddBtn.addEventListener('click', () => {
+                const quantity = parseFloat(quantityInput.value);
+                if (foodToAddWithModal && quantity > 0) {
+                    logFoodEntry(foodToAddWithModal, quantity);
+                    quantityModal.style.display = 'none';
+                    foodToAddWithModal = null;
+                } else {
+                    showToast("Please enter a valid quantity.");
+                }
+            });
+
+            modalCancelBtn.addEventListener('click', () => {
+                quantityModal.style.display = 'none';
+                foodToAddWithModal = null;
+            });
+
+            quantityModal.addEventListener('click', (e) => {
+                if (e.target === quantityModal) {
+                    quantityModal.style.display = 'none';
+                    foodToAddWithModal = null;
+                }
+            });
+            
+            todaysLogList.addEventListener('click', (e) => {
+                const button = e.target.closest('.remove-log-btn');
+                if (button && button.dataset.index) {
+                    removeFoodFromLog(parseInt(button.dataset.index));
+                }
+            });
+            todaysLogListRoutine.addEventListener('click', (e) => {
+                const button = e.target.closest('.remove-log-btn');
+                if (button && button.dataset.index) {
+                    removeFoodFromLog(parseInt(button.dataset.index));
+                }
+            });
+            
+            // --- Date Picker Logic ---
+            function updateSelectedDate(newDate) {
+                if (newDate) {
+                    selectedLogDate = newDate;
+                    logDatePickerCustom.value = selectedLogDate;
+                    logDatePickerRoutine.value = selectedLogDate;
+                    
+                    renderTodaysLog('add-custom');
+                    renderTodaysLog('log-routine');
+                }
+            }
+
+            logDatePickerCustom.addEventListener('change', () => {
+                updateSelectedDate(logDatePickerCustom.value);
+            });
+            
+            logDatePickerRoutine.addEventListener('change', () => {
+                updateSelectedDate(logDatePickerRoutine.value);
+            });
+
+
+            // --- 9. ROUTINE LOGIC ---
+            routineLogPage.addEventListener('click', (e) => {
+                const baseBtn = e.target.closest('.btn-log-base');
+                const boosterBtn = e.target.closest('.btn-log-booster');
+                const dateStr = selectedLogDate;
+                if (!mealLog[dateStr]) {
+                    mealLog[dateStr] = [];
+                }
+
+                if (baseBtn && baseBtn.dataset.meal) {
+                    const mealKey = baseBtn.dataset.meal;
+                    const itemsToLog = ROUTINE_TEMPLATE[mealKey];
+                    
+                    if (itemsToLog) {
+                        itemsToLog.forEach(item => {
+                            const food = FOOD_DATABASE.find(f => f.id === item.id);
+                            if (food) {
+                                const newLogEntry = { 
+                                    dbId: food.id, 
+                                    name: food.name, 
+                                    serving: `${item.qty} ${food.base_unit}${item.qty > 1 && food.base_unit !== 'g' && food.base_unit.slice(-1) !== 's' ? 's' : ''}`, 
+                                    qty: item.qty 
+                                };
+                                mealLog[dateStr].push(newLogEntry);
+                            }
+                        });
+                        saveMealLog();
+                        showToast(`Routine meal added to ${formatDisplayDate(dateStr)}!`);
+                        renderTodaysLog('log-routine'); 
+                        renderDailyGoals('dashboard');
+                    }
+                }
+
+                if (boosterBtn && boosterBtn.dataset.foodId) {
+                    const foodId = parseInt(boosterBtn.dataset.foodId);
+                    foodToAddWithModal = FOOD_DATABASE.find(f => f.id === foodId);
+                    if (foodToAddWithModal) {
+                        modalTitle.textContent = `Add ${foodToAddWithModal.name}`;
+                        modalLabel.textContent = `Quantity (${foodToAddWithModal.base_unit})`;
+                        modalUnit.textContent = foodToAddWithModal.base_unit;
+                        if (foodId === 26) { 
+                            quantityInput.value = "5";
+                        } else {
+                            quantityInput.value = "1";
+                        }
+                        quantityModal.style.display = 'flex';
+                        quantityInput.focus();
+                    }
+                }
+            });
+
+            // --- 10. FOOD LIST PAGE LOGIC ---
+            function renderFoodDatabase() {
+                foodDatabaseListContainer.innerHTML = '';
+                const sortedDB = [...FOOD_DATABASE].sort((a, b) => a.name.localeCompare(b.name));
+                
+                sortedDB.forEach(food => {
+                    const cardHTML = `
+                        <div class="food-list-item">
+                            <h3>${food.name}</h3>
+                            <p class="serving-info">Nutrition per 1 ${food.base_unit}</p>
+                            <div class="food-list-nutrients">
+                                <span><strong>Calories:</strong> ${food.calories.toFixed(0)} kcal</span>
+                                <span><strong>Protein:</strong> ${food.protein.toFixed(1)} g</span>
+                                <span><strong>Fat:</strong> ${food.fat.toFixed(1)} g</span>
+                                <span><strong>Carbs:</strong> ${food.carbs.toFixed(1)} g</span>
+                                <span><strong>Calcium:</strong> ${food.calcium_mg.toFixed(0)} mg</span>
+                                <span><strong>Iron:</strong> ${food.iron_mg.toFixed(1)} mg</span>
+                            </div>
+                        </div>
+                    `;
+                    foodDatabaseListContainer.insertAdjacentHTML('beforeend', cardHTML);
+                });
+            }
+
+            // --- ADD FOOD FORM LOGIC ---
+            showAddFoodFormBtn.addEventListener('click', () => {
+                addFoodForm.style.display = 'grid';
+                showAddFoodFormBtn.style.display = 'none';
+            });
+            
+            cancelAddFoodBtn.addEventListener('click', () => {
+                addFoodForm.style.display = 'none';
+                showAddFoodFormBtn.style.display = 'block';
+                addFoodForm.reset();
+            });
+
+            addFoodForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                
+                const name = document.getElementById('new-food-name').value.trim();
+                const unit = document.getElementById('new-food-unit').value.trim();
+                const calories = parseFloat(document.getElementById('new-food-calories').value);
+                const protein = parseFloat(document.getElementById('new-food-protein').value);
+                const fat = parseFloat(document.getElementById('new-food-fat').value);
+                const carbs = parseFloat(document.getElementById('new-food-carbs').value);
+                const calcium = parseFloat(document.getElementById('new-food-calcium').value) || 0;
+                const iron = parseFloat(document.getElementById('new-food-iron').value) || 0;
+
+                if (!name || !unit || isNaN(calories) || isNaN(protein) || isNaN(fat) || isNaN(carbs)) {
+                    showToast('Please fill in all required fields (Name, Unit, Nutrients).');
+                    return;
+                }
+
+                const nextId = FOOD_DATABASE.length > 0 ? Math.max(...FOOD_DATABASE.map(f => f.id)) + 1 : 1;
+                
+                const newFood = {
+                    id: nextId,
+                    name: name,
+                    base_unit: unit,
+                    calories: calories,
+                    protein: protein,
+                    fat: fat,
+                    carbs: carbs,
+                    calcium_mg: calcium,
+                    iron_mg: iron
+                };
+
+                FOOD_DATABASE.push(newFood);
+                saveFoodDatabase();
+                renderFoodDatabase();
+                
+                addFoodForm.style.display = 'none';
+                showAddFoodFormBtn.style.display = 'block';
+                addFoodForm.reset();
+                
+                showToast(`${name} added to your database!`);
+            });
+
+
+            // --- 11. MEAL IDEAS LOGIC ---
+            function renderDayTabs() {
+                daySelectorContainer.innerHTML = '';
+                MEAL_PLAN_DATA.forEach(dayData => {
+                    const tab = document.createElement('div');
+                    tab.className = 'day-tab';
+                    tab.textContent = dayData.day;
+                    tab.dataset.dayName = dayData.day;
+                    
+                    if (dayData.day === selectedPlanDay) {
+                        tab.classList.add('active');
+                    }
+                    daySelectorContainer.appendChild(tab);
+                });
+            }
+
+            function renderMealIdeas(dayName) {
+                mealListContainer.innerHTML = '';
+                const dayData = MEAL_PLAN_DATA.find(d => d.day === dayName);
+                if (!dayData) return;
+
+                Object.entries(dayData.meals).forEach(([key, description]) => {
+                    const mealName = MEAL_TYPE_MAP[key] || 'Meal';
+                    const mealIcon = MEAL_ICON_MAP[key] || 'dot';
+                    
+                    const cardHTML = `
+                        <div class="meal-card">
+                            <i class="ph-light ph-${mealIcon} meal-icon"></i>
+                            <div>
+                                <h3 class="meal-title">${mealName}</h3>
+                                <p class="meal-description">${description}</p>
+                            </div>
+                        </div>
+                    `;
+                    mealListContainer.insertAdjacentHTML('beforeend', cardHTML);
+                });
+            }
+
+            daySelectorContainer.addEventListener('click', (e) => {
+                const tab = e.target.closest('.day-tab');
+                if (tab && tab.dataset.dayName) {
+                    selectedPlanDay = tab.dataset.dayName;
+                    renderDayTabs(); 
+                    renderMealIdeas(selectedPlanDay); 
+                }
+            });
+
+            // --- 12. HISTORY REPORT LOGIC ---
+            function renderHistoryReport() {
+                historyReportContainer.innerHTML = '';
+                
+                for (let i = 0; i < 7; i++) {
+                    const dateStr = getDateStringDaysAgo(i);
+                    const dayTotals = getTotalsForDay(dateStr);
+                    const dayWeight = weightLog.find(w => w.date === dateStr);
+
+                    const cardHTML = `
+                        <div class="history-day-card">
+                            <h3 class="history-day-title">
+                                ${formatDisplayDate(dateStr)}
+                            </h3>
+                            <div class="history-day-stats">
+                                <div class="history-stat">
+                                    <span class="history-stat-label">Calories Logged</span>
+                                    <span class="history-stat-value">${dayTotals.calories.toFixed(0)} kcal</span>
+                                </div>
+                                <div class="history-stat">
+                                    <span class="history-stat-label">Weight Logged</span>
+                                    <span class="history-stat-value">${dayWeight ? dayWeight.weight + ' kg' : '--'}</span>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                    historyReportContainer.insertAdjacentHTML('beforeend', cardHTML);
+                }
+            }
+            
+            // --- NEW: 13. IMPORT/EXPORT LOGIC ---
+
+            /**
+             * Exports all user data to a JSON file.
+             */
+            function exportData() {
+                try {
+                    const dataToExport = {
+                        exportDate: new Date().toISOString(),
+                        userProfile: JSON.parse(localStorage.getItem('userProfile') || '{}'),
+                        weightLog: JSON.parse(localStorage.getItem('weightLog') || '[]'),
+                        mealLog: JSON.parse(localStorage.getItem('mealLog') || '{}'),
+                        foodDatabase: JSON.parse(localStorage.getItem('foodDatabase') || '[]')
+                    };
+                    
+                    const dataStr = JSON.stringify(dataToExport, null, 2); // Pretty-print JSON
+                    const blob = new Blob([dataStr], { type: 'application/json' });
+                    const url = URL.createObjectURL(blob);
+                    
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = `myTrackerData_${getTodayDateString()}.json`;
+                    document.body.appendChild(a);
+                    a.click();
+                    document.body.removeChild(a);
+                    URL.revokeObjectURL(url);
+                    
+                    showToast('Data exported successfully!');
+                } catch (error) {
+                    console.error('Error exporting data:', error);
+                    showToast('Error: Could not export data.');
+                }
+            }
+
+            /**
+             * Handles the file import process and merges data.
+             */
+            function importData(event) {
+                const file = event.target.files[0];
+                if (!file) return;
+
+                if (file.type !== 'application/json') {
+                    showToast('Error: Please select a valid .json file.');
+                    return;
+                }
+
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    try {
+                        const importedData = JSON.parse(e.target.result);
+                        
+                        // Validate imported data structure
+                        if (!importedData.weightLog || !importedData.mealLog || !importedData.foodDatabase) {
+                            throw new Error('Invalid file structure.');
+                        }
+
+                        // --- MERGE LOGIC ---
+
+                        // 1. Weight Log: Merge and de-duplicate by date (last-one-wins)
+                        const currentWeightLog = JSON.parse(localStorage.getItem('weightLog')) || [];
+                        const importedWeightLog = importedData.weightLog || [];
+                        const weightMap = new Map();
+                        // Load current data first, then imported. This way imported data can update existing dates.
+                        [...currentWeightLog, ...importedWeightLog].forEach(entry => {
+                            if(entry.date && entry.weight) {
+                                weightMap.set(entry.date, entry.weight);
+                            }
+                        });
+                        const mergedWeightLog = Array.from(weightMap, ([date, weight]) => ({ date, weight }))
+                                                     .sort((a, b) => new Date(a.date) - new Date(b.date));
+
+                        // 2. Meal Log: Merge by date, concatenating arrays
+                        const currentMealLog = JSON.parse(localStorage.getItem('mealLog')) || {};
+                        const importedMealLog = importedData.mealLog || {};
+                        const mergedMealLog = { ...currentMealLog };
+                        
+                        Object.keys(importedMealLog).forEach(dateKey => {
+                            const importedEntries = importedMealLog[dateKey] || [];
+                            const currentEntries = mergedMealLog[dateKey] || [];
+                            // This just adds all imported entries. Simple and non-destructive.
+                            mergedMealLog[dateKey] = [...currentEntries, ...importedEntries];
+                        });
+
+                        // 3. Food Database: Merge and de-duplicate by name (preserves existing)
+                        const currentFoodDB = JSON.parse(localStorage.getItem('foodDatabase')) || [];
+                        const importedFoodDB = importedData.foodDatabase || [];
+                        const foodMap = new Map();
+                        // Add current data first, so it is preserved on conflict
+                        currentFoodDB.forEach(food => {
+                            if(food.name) foodMap.set(food.name.toLowerCase().trim(), food)
+                        });
+                        // Add imported data only if the name doesn't already exist
+                        importedFoodDB.forEach(food => {
+                            if (food.name && !foodMap.has(food.name.toLowerCase().trim())) {
+                                foodMap.set(food.name.toLowerCase().trim(), food);
+                            }
+                        });
+                        const mergedFoodDB = Array.from(foodMap.values());
+
+                        // --- SAVE MERGED DATA ---
+                        // We do NOT overwrite the userProfile, as per the "don't overwrite" rule.
+                        localStorage.setItem('weightLog', JSON.stringify(mergedWeightLog));
+                        localStorage.setItem('mealLog', JSON.stringify(mergedMealLog));
+                        localStorage.setItem('foodDatabase', JSON.stringify(mergedFoodDB));
+
+                        showToast('Data merged successfully!');
+                        
+                        // Reload data into the app and refresh the view
+                        loadData();
+                        renderDashboard();
+
+                    } catch (error) {
+                        console.error('Error importing data:', error);
+                        showToast('Error: Could not import file. Invalid format.');
+                    } finally {
+                        // Reset file input to allow importing the same file again
+                        event.target.value = null;
+                    }
+                };
+                
+                reader.readAsText(file);
+            }
+
+            // Bind listeners for import/export
+            exportDataBtn.addEventListener('click', exportData);
+            importFileInput.addEventListener('change', importData);
+
+
+            // --- 14. INITIALIZATION ---
+            function init() {
+                // Set initial dates for pickers
+                selectedLogDate = getTodayDateString();
+                logDatePickerCustom.value = selectedLogDate;
+                logDatePickerRoutine.value = selectedLogDate;
+                weightLogDate.value = getTodayDateString();
+
+                loadData(); // This now loads the custom food DB
+                showPage('dashboard'); // Start on the dashboard
+            }
+
+            init();
+        });
+    </script>
+
+</body>
+</html>
+
